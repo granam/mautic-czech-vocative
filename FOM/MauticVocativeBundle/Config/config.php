@@ -8,7 +8,7 @@ return [
     'services' => [
         'events' => [
             'plugin.vocative.vocativebundle.subscriber' => [
-                'class' => 'MauticPlugin\VocativeBundle\EventListener\VocativeSubscriber'
+                'class' => 'MauticPlugin\MauticVocativeBundle\EventListener\VocativeSubscriber'
             ]
         ],
     ],

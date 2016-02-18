@@ -1,5 +1,5 @@
 <?php
-namespace MauticPlugin\VocativeBundle\EventListener;
+namespace MauticPlugin\MauticVocativeBundle\EventListener;
 
 use Mautic\CoreBundle\EventListener\CommonSubscriber;
 use Mautic\EmailBundle\EmailEvents;
