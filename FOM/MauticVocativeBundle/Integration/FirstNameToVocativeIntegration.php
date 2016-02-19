@@ -3,16 +3,16 @@ namespace MauticPlugin\MauticVocativeBundle\Integration;
 
 use Mautic\PluginBundle\Integration\AbstractIntegration;
 
-class VocativeIntegration extends AbstractIntegration
+class FirstNameToVocativeIntegration extends AbstractIntegration
 {
     public function getName()
     {
-        return 'Vocative';
+        return 'FirstNameToVocative';
     }
 
     public function getAuthenticationType()
     {
-        return 'oauth2';
+        return 'none';
     }
 
 }
