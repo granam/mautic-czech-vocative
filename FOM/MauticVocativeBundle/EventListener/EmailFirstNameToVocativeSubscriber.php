@@ -28,7 +28,7 @@ class EmailFirstNameToVocativeSubscriber extends CommonSubscriber
     {
         $replaced = array_map(
             function ($value) {
-                if (preg_match_all('~(?<toReplace>\{(?<toVocative>[^\{\}]+)\|foo\})~u', $value, $matches) > 0) {
+                if (preg_match_all('~(?<toReplace>\[(?<toVocative>[^\[\]]+)\|foo\])~u', $value, $matches) > 0) {
                     foreach ($matches['toReplace'] as $index => $toReplace) {
                         $toVocative = $matches['toVocative'][$index];
                         $value = str_replace($toReplace, $this->toVocative($toVocative), $value);
@@ -60,7 +60,7 @@ class EmailFirstNameToVocativeSubscriber extends CommonSubscriber
         $trimmed = trim($value);
         $decoded = html_entity_decode($trimmed, ENT_HTML5, 'UTF-8');
         $originalLocale = setlocale(LC_CTYPE, 0);
-        setlocale(LC_CTYPE, 'en_US.utf8');
+        setlocale(LC_CTYPE, 'C.UTF-8');
         $withoutDiacritics = iconv('UTF-8', 'ASCII//TRANSLIT', $decoded);
         setlocale(LC_CTYPE, $originalLocale);
         $underscored = preg_replace('~[^a-zA-Z0-9]+~', '_', $withoutDiacritics);
