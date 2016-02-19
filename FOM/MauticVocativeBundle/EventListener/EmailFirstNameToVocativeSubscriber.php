@@ -28,7 +28,7 @@ class EmailFirstNameToVocativeSubscriber extends CommonSubscriber
     {
         $replaced = array_map(
             function ($value) {
-                if (preg_match_all('~(?<toReplace>\[(?<toVocative>[^\[\]]+)\|foo\])~u', $value, $matches) > 0) {
+                if (preg_match_all('~(?<toReplace>\[(?<toVocative>[^\[\]]+)\|vocative\])~u', $value, $matches) > 0) {
                     foreach ($matches['toReplace'] as $index => $toReplace) {
                         $toVocative = $matches['toVocative'][$index];
                         $value = str_replace($toReplace, $this->toVocative($toVocative), $value);
