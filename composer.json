@@ -9,13 +9,18 @@
     }
   },
   "require": {
-    "php": "^5.3.7",
+    "php": "~5.4",
     "ext-iconv": "*"
   },
   "require-dev": {
+    "granam/czech-vocative": "dev-master",
+    "friendsofmautic/bundle-skeleton": "dev-master",
     "phpunit/phpunit": "~4.4",
-    "friendsofmautic/bundle-skeleton": "dev-master"
+    "mockery/mockery": "dev-master"
   },
-  "minimal-stability": "dev",
-  "prefer-stable": true
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "scripts": {
+    "pre-autoload-dump": "MauticPlugin\\MauticVocativeBundle\\MauticVocativeBundle::includeLibraryToBundle"
+  }
 }

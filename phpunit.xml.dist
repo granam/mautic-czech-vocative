@@ -17,9 +17,9 @@
     </testsuites>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="false">
-            <directory>./FOM</directory>
+            <directory>./FOM/MauticVocativeBundle</directory>
             <exclude>
-                <directory>./FOM/Tests</directory>
+                <directory>./FOM/MauticVocativeBundle/Tests</directory>
             </exclude>
         </whitelist>
     </filter>

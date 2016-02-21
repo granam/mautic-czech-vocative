@@ -11,5 +11,10 @@ return [
                 'class' => 'MauticPlugin\MauticVocativeBundle\EventListener\EmailFirstNameToVocativeSubscriber'
             ]
         ],
+        'other' => [
+            'plugin.vocative.name_converter' => [
+                'class' => 'MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter'
+            ]
+        ]
     ],
 ];

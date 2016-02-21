@@ -4,6 +4,7 @@ namespace MauticPlugin\MauticVocativeBundle\EventListener;
 use Mautic\CoreBundle\EventListener\CommonSubscriber;
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\EmailSendEvent;
+use MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter;
 
 class EmailFirstNameToVocativeSubscriber extends CommonSubscriber
 {
@@ -47,25 +48,10 @@ class EmailFirstNameToVocativeSubscriber extends CommonSubscriber
 
     private function toVocative($value)
     {
-        $id = $this->toNormalizedId($value);
-        if (!$this->translator->hasId($id, 'vocatives', 'cs_CZ')) {
-            return $value; // nothing to do
-        }
+        /** @var NameToVocativeConverter $converter */
+        $converter = $this->factory->getKernel()->getContainer()->get('plugin.vocative.name_converter');
 
-        return $this->translator->trans($id, [] /* no parameters */, 'vocatives', 'cs_CZ');
+        return $converter->convert($value);
     }
 
-    private function toNormalizedId($value)
-    {
-        $trimmed = trim($value);
-        $decoded = html_entity_decode($trimmed, ENT_HTML5, 'UTF-8');
-        $originalLocale = setlocale(LC_CTYPE, 0);
-        setlocale(LC_CTYPE, 'C.UTF-8');
-        $withoutDiacritics = iconv('UTF-8', 'ASCII//TRANSLIT', $decoded);
-        setlocale(LC_CTYPE, $originalLocale);
-        $underscored = preg_replace('~[^a-zA-Z0-9]+~', '_', $withoutDiacritics);
-        $lowercased = strtolower($underscored);
-
-        return 'plugin.vocative.' . $lowercased;
-    }
 }
