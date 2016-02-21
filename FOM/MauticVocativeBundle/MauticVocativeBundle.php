@@ -14,17 +14,17 @@ class MauticVocativeBundle extends PluginBundleBase
             __DIR__ . '/vendor/granam/czech-vocative/src'
         );
         file_put_contents(
-            __DIR__ . '/vendor/granam/czech-vocative/src/Name.php',
+            __DIR__ . '/vendor/granam/czech-vocative/src/CzechName.php',
             preg_replace(
-                '~namespace\s+Vocative~',
-                'namespace MauticPlugin\MauticVocativeBundle\Vocative',
-                file_get_contents(__DIR__ . '/vendor/granam/czech-vocative/src/Name.php')
+                '~namespace\s+CzechVocative~',
+                'namespace MauticPlugin\MauticVocativeBundle\CzechVocative',
+                file_get_contents(__DIR__ . '/vendor/granam/czech-vocative/src/CzechName.php')
             )
         );
     }
 
     public function boot()
     {
-        require_once __DIR__ . '/vendor/granam/czech-vocative/src/Name.php';
+        require_once __DIR__ . '/vendor/granam/czech-vocative/src/CzechName.php';
     }
 }

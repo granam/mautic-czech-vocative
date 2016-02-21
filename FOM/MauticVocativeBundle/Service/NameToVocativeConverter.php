@@ -1,12 +1,12 @@
 <?php
 namespace MauticPlugin\MauticVocativeBundle\Service;
 
-use MauticPlugin\MauticVocativeBundle\Vocative\Name;
+use MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName;
 
 class NameToVocativeConverter
 {
     /**
-     * @var Name
+     * @var CzechName
      */
     private $name;
 
@@ -22,7 +22,7 @@ class NameToVocativeConverter
     private function getName()
     {
         if (!isset($this->name)) {
-            $this->name = new Name();
+            $this->name = new CzechName();
         }
 
         return $this->name;

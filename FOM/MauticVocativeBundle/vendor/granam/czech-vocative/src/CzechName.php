@@ -1,12 +1,12 @@
 <?php
-namespace MauticPlugin\MauticVocativeBundle\Vocative;
+namespace MauticPlugin\MauticVocativeBundle\CzechVocative;
 
 define(
 'VOCATIVE_DATA_DIR',
     dirname(__FILE__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR
 );
 
-class Name
+class CzechName
 {
     /**
      * Vrací jméno vyskloňované do 5. pádu
