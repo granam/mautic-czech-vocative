@@ -12,3 +12,9 @@ In your Mautic insert into an email template this shortcode around *some name*
 `[some name|vocative]`
 - for example `[Karel|vocative]`
 - or better example `[{leadfield=firstname}|vocative]`
+
+#Known issues
+If a name with unknown structure is given to convert, the *e* suffix is added.
+`[Who am I?|vocative]` = `Who am I?e`
+ - on the other hand, also foreign names are converted to czech form
+ `[Cassandra|vocative]` = `Cassandro`
