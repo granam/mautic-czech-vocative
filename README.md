@@ -18,3 +18,6 @@ If a name with unknown structure is given to convert, the *e* suffix is added.
 `[Who am I?|vocative]` = `Who am I?e`
  - on the other hand, also foreign names are converted to czech form
  `[Cassandra|vocative]` = `Cassandro`
+
+# Credits
+The plugin has been created thank to sponsor svetandroida.cz and the author of `bigit/vokativ` library Petr Joachim.
