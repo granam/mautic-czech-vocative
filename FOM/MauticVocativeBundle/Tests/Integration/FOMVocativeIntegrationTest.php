@@ -2,16 +2,16 @@
 namespace MauticPlugin\MauticVocativeBundle\Tests\Integration;
 
 use Mautic\CoreBundle\Factory\MauticFactory;
-use MauticPlugin\MauticVocativeBundle\Integration\FirstNameToVocativeIntegration;
+use MauticPlugin\MauticVocativeBundle\Integration\FOMVocativeIntegration;
 
-class FirstNameToVocativeIntegrationTest extends \PHPUnit_Framework_TestCase
+class FOMVocativeIntegrationTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
      */
     public function I_can_integrate_it_by_proper_name()
     {
-        $integration = new FirstNameToVocativeIntegration($this->createFactory());
+        $integration = new FOMVocativeIntegration($this->createFactory());
         $this->assertSame(
             $this->parseExpectedName(static::class),
             $integration->getName()
@@ -40,7 +40,7 @@ class FirstNameToVocativeIntegrationTest extends \PHPUnit_Framework_TestCase
      */
     public function I_do_not_need_to_authenticate_to_use_it()
     {
-        $integration = new FirstNameToVocativeIntegration($this->createFactory());
+        $integration = new FOMVocativeIntegration($this->createFactory());
         $this->assertSame(
             'none',
             $integration->getAuthenticationType()

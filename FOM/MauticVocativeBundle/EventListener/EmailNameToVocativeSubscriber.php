@@ -6,7 +6,7 @@ use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\EmailSendEvent;
 use MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter;
 
-class EmailFirstNameToVocativeSubscriber extends CommonSubscriber
+class EmailNameToVocativeSubscriber extends CommonSubscriber
 {
 
     /**

@@ -1,14 +1,14 @@
 <?php
 return [
     'name' => 'Word to vocative',
-    'description' => 'Modifier to convert a first name to its vocative form, useful for email opening salutation.',
+    'description' => 'Modifier to convert a name to its vocative form, useful for email opening salutation.',
     'author' => 'Friends of Mautic',
     'version' => '1.0.0',
 
     'services' => [
         'events' => [
-            'plugin.vocative.emailFirstNameToVocative.subscriber' => [
-                'class' => 'MauticPlugin\MauticVocativeBundle\EventListener\EmailFirstNameToVocativeSubscriber'
+            'plugin.vocative.emailNameToVocative.subscriber' => [
+                'class' => 'MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber'
             ]
         ],
         'other' => [

@@ -4,9 +4,9 @@ namespace MauticPlugin\MauticVocativeBundle\Tests\EventListener;
 use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\EmailSendEvent;
-use MauticPlugin\MauticVocativeBundle\EventListener\EmailFirstNameToVocativeSubscriber;
+use MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber;
 
-class EmailFirstNameToVocativeSubscriberTest extends \PHPUnit_Framework_TestCase
+class EmailNameToVocativeSubscriberTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -14,7 +14,7 @@ class EmailFirstNameToVocativeSubscriberTest extends \PHPUnit_Framework_TestCase
     public function Conversion_reacts_both_on_send_and_view_of_email()
     {
         $this->assertEquals(
-            array_keys(EmailFirstNameToVocativeSubscriber::getSubscribedEvents()),
+            array_keys(EmailNameToVocativeSubscriber::getSubscribedEvents()),
             [EmailEvents::EMAIL_ON_SEND, EmailEvents::EMAIL_ON_DISPLAY]
         );
     }
@@ -33,7 +33,7 @@ class EmailFirstNameToVocativeSubscriberTest extends \PHPUnit_Framework_TestCase
         $mauticFactory->shouldReceive('getDispatcher');
         $mauticFactory->shouldReceive('getTranslator');
         /** @var MauticFactory|\Mockery\MockInterface $mauticFactory */
-        $subscriber = new EmailFirstNameToVocativeSubscriber($mauticFactory);
+        $subscriber = new EmailNameToVocativeSubscriber($mauticFactory);
         $emailSendEvent = \Mockery::mock(EmailSendEvent::class);
         $emailSendEvent->shouldReceive('getContent')
             ->atLeast()->once()
