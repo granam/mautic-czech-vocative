@@ -3,7 +3,7 @@
 1. Manually copy the `MauticVocativeBundle` directory into your Mautic `plugins` directory.
  - for example `/var/www/mautic/plugins/MauticVocativeBundle`.
 2. Clear Mautic cache by `./app/console cache:clear` or just delete the `app/cache` dir.
-3. Login into your Mautic as an admin, open cogwheel menu in right top corner and choose *Plugins*
+3. Log in to your Mautic as an admin, open cogwheel menu in the right top corner and choose *Plugins*
 4. Click *Install/Upgrade Plugins*
  - if everything goes well, you got new plugin *FirstName*.
 
@@ -20,4 +20,5 @@ If a name with unknown structure is given to convert, the *e* suffix is added.
  `[Cassandra|vocative]` = `Cassandro`
 
 # Credits
-The plugin has been created thank to sponsor svetandroida.cz and the author of `bigit/vokativ` library Petr Joachim.
+The plugin has been created thank to sponsor [svetandroida.cz](https://www.svetandroida.cz/)
+and the author of czech vocative library [`bigit/vokativ`](https://bitbucket.org/bigit/vokativ.git) Petr Joachim.
