@@ -4,6 +4,7 @@ namespace MauticPlugin\MauticVocativeBundle\Tests\EventListener;
 use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\EmailSendEvent;
+use Mautic\LeadBundle\EventListener\EmailSubscriber;
 use MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber;
 
 class EmailNameToVocativeSubscriberTest extends \PHPUnit_Framework_TestCase
@@ -17,6 +18,58 @@ class EmailNameToVocativeSubscriberTest extends \PHPUnit_Framework_TestCase
             array_keys(EmailNameToVocativeSubscriber::getSubscribedEvents()),
             [EmailEvents::EMAIL_ON_SEND, EmailEvents::EMAIL_ON_DISPLAY]
         );
+
+    }
+
+    /**
+     * @test
+     */
+    public function Conversion_has_lower_priority_than_lead_events()
+    {
+        $leadEmailEventPriorities = $this->getLeadEmailEventPriorities();
+        foreach (EmailNameToVocativeSubscriber::getSubscribedEvents() as $eventName => $reaction) {
+            $this->assertTrue(is_array($reaction));
+            $priority = $this->filterPriorityValue($reaction);
+            $this->assertArrayHasKey($eventName, $leadEmailEventPriorities);
+            $this->assertLessThan($leadEmailEventPriorities[$eventName], $priority);
+        }
+    }
+
+    /**
+     * By event name indexed priorities
+     * @return array|int[]
+     */
+    private function getLeadEmailEventPriorities()
+    {
+        $subscribedEvents = EmailSubscriber::getSubscribedEvents();
+        $lookedForEvents = [EmailEvents::EMAIL_ON_SEND, EmailEvents::EMAIL_ON_DISPLAY];
+        $this->assertNotEmpty($lookedForEvents);
+        $watchedEvents = array_filter(
+            $subscribedEvents,
+            function ($value) use ($subscribedEvents, $lookedForEvents) {
+                $eventName = array_search($value, $subscribedEvents);
+
+                return in_array($eventName, $lookedForEvents);
+            }
+        );
+        $priorities = [];
+        foreach ($watchedEvents as $eventName => $reaction) {
+            $priority = $this->filterPriorityValue($reaction);
+            $priorities[$eventName] = $priority;
+        }
+        $this->assertCount(count($lookedForEvents), $priorities);
+
+        return $priorities;
+    }
+
+    private function filterPriorityValue(array $reaction)
+    {
+        $wrappedPriority = array_filter($reaction, function ($value) {
+            return is_numeric($value);
+        });
+        $this->assertTrue(is_array($wrappedPriority));
+
+        return current($wrappedPriority);
     }
 
     /**
@@ -52,7 +105,7 @@ class EmailNameToVocativeSubscriberTest extends \PHPUnit_Framework_TestCase
         $nameConverter->shouldReceive('convert')
             ->with($toVocative)
             ->andReturn($inVocative);
-            /** @var EmailSendEvent $emailSendEvent */
-            $subscriber->onEmailGenerate($emailSendEvent);
+        /** @var EmailSendEvent $emailSendEvent */
+        $subscriber->onEmailGenerate($emailSendEvent);
     }
 }
