@@ -13,9 +13,17 @@ In your Mautic insert into an email template this shortcode around *some name*
 - for example `[Karel|vocative]`
 - or better example `[{leadfield=firstname}|vocative]`
 
+## Where errors dwell
+ If any error happens, first of all, have you **cleared the cache**?
+ 
+ Otherwise check the logs for what happened:
+ 
+ 1. they are placed in app/logs dir in your Mautic, like `/var/www/mautic/app/logs/mautic_prod-2016-02-19.php`
+ 2. or, if they are more fatal or just Mautic does not catch them (error 500), see your web-server logs, like `/var/log/apache2/error.log`
+
 #Known issues
-If a name with unknown structure is given to convert, the *e* suffix is added.
-`[Who am I?|vocative]` = `Who am I?e`
+If a name with unknown structure is given to convert, the *E* suffix is added.
+`[Who am I?|vocative]` = `Who am I?E`
  - on the other hand, also foreign names are converted to czech form
  `[Cassandra|vocative]` = `Cassandro`
 
