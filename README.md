@@ -28,5 +28,5 @@ If a name with unknown structure is given to convert, the *E* suffix is added.
  `[Cassandra|vocative]` = `Cassandro`
 
 # Credits
-The plugin has been created thank to sponsor [svetandroida.cz](https://www.svetandroida.cz/)
-and the author of czech vocative library [`bigit/vokativ`](https://bitbucket.org/bigit/vokativ.git) Petr Joachim.
+The plugin has been created thanks to sponsor [svetandroida.cz](https://www.svetandroida.cz/)
+and thanks to the author of free czech vocative library [`bigit/vokativ`](https://bitbucket.org/bigit/vokativ.git) Petr Joachim.
