@@ -146,7 +146,7 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
      */
     public function I_got_names_converted_even_if_wrapped_by_white_space()
     {
-        $this->checkEmailContentConversion("\t\n baz  \t\n ", 'baz');
+        $this->checkEmailContentConversion($withWhiteSpaces = "\t\n baz  \t\n ", trim($withWhiteSpaces));
     }
 
     /**
@@ -163,6 +163,16 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
     public function I_got_removed_white_spaces_only_without_conversion_trigger()
     {
         $this->checkEmailContentConversion("\n\t\t    \n\t  ", false /* conversion should not be called */);
+    }
+
+    /**
+     * @test
+     */
+    public function I_got_untouched_names_with_trailing_non_letters()
+    {
+        $withTrailingNonLetters = 'What?!';
+        $this->assertNotRegExp('~[[:alpha:]]$~u', $withTrailingNonLetters);
+        $this->checkEmailContentConversion($withTrailingNonLetters, $withTrailingNonLetters);
     }
 
 }
