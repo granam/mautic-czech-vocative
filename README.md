@@ -15,6 +15,7 @@ In your Mautic insert into an email template this shortcode around *some name*
 hint: use `CTRL+SHIFT+V` to insert copied text without formatting, also check source code of your email template by
 ![Mautic source code icon](https://github.com/jaroslavtyc/mautic-bundle-skeleton/blob/master/mautic/app/bundles/CoreBundle/Assets/js/libraries/ckeditor/plugins/sourcedialog/icons/sourcedialog.png)
 button for unwanted formatting
+- also foreign and non-human names are converted to czech form `[Cassandra|vocative]` = `Cassandro`, `[android|vocative]` = `Androide`
 
 ## Where errors dwell
  If any error happens, first of all, have you **cleared the cache**?
@@ -23,12 +24,6 @@ button for unwanted formatting
  
  1. they are placed in app/logs dir in your Mautic, like `/var/www/mautic/app/logs/mautic_prod-2016-02-19.php`
  2. or, if they are more fatal or just Mautic does not catch them (error 500), see your web-server logs, like `/var/log/apache2/error.log`
-
-#Known issues
-If a name ends by non-character (sadly including whitespaces), the *E* suffix is added.
-`[Who am I?|vocative]` = `Who am I?E`
- - on the other hand, also foreign names are converted to czech form
- `[Cassandra|vocative]` = `Cassandro`, `[android|vocative]` = `Androide`
 
 # Credits
 The plugin has been created thanks to sponsor [svetandroida.cz](https://www.svetandroida.cz/)
