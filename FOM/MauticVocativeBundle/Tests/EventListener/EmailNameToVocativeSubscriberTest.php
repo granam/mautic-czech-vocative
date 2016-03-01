@@ -109,7 +109,8 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
             $nameConverter->shouldReceive('convert')
                 ->never();
             $emailSendEvent->shouldReceive('setContent')
-                ->never();
+                ->atLeast()->once()
+                ->with('foo  bar');
         }
 
         /** @var EmailSendEvent $emailSendEvent */
@@ -146,6 +147,14 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
     public function I_got_names_converted_even_if_wrapped_by_white_space()
     {
         $this->checkEmailContentConversion("\t\n baz  \t\n ", 'baz');
+    }
+
+    /**
+     * @test
+     */
+    public function I_do_not_trigger_conversion_by_empty_value()
+    {
+        $this->checkEmailContentConversion('', false /* conversion should not eb called */);
     }
 
 }
