@@ -6,6 +6,7 @@ use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\EmailSendEvent;
 use Mautic\LeadBundle\EventListener\EmailSubscriber;
 use MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber;
+use MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter;
 use MauticPlugin\MauticVocativeBundle\Tests\FOMTestWithMockery;
 
 class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
@@ -20,7 +21,6 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
             array_keys(EmailNameToVocativeSubscriber::getSubscribedEvents()),
             [EmailEvents::EMAIL_ON_SEND, EmailEvents::EMAIL_ON_DISPLAY]
         );
-
     }
 
     /**
@@ -28,7 +28,7 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
      */
     public function Conversion_has_lower_priority_than_lead_events()
     {
-        $leadEmailEventPriorities = $this->getLeadEmailEventPriorities();
+        $leadEmailEventPriorities = $this->getLeadEmailEventsPriorities();
         foreach (EmailNameToVocativeSubscriber::getSubscribedEvents() as $eventName => $reaction) {
             $this->assertTrue(is_array($reaction));
             $priority = $this->filterPriorityValue($reaction);
@@ -41,7 +41,7 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
      * By event name indexed priorities
      * @return array|int[]
      */
-    private function getLeadEmailEventPriorities()
+    private function getLeadEmailEventsPriorities()
     {
         $subscribedEvents = EmailSubscriber::getSubscribedEvents();
         $lookedForEvents = [EmailEvents::EMAIL_ON_SEND, EmailEvents::EMAIL_ON_DISPLAY];
@@ -94,13 +94,23 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
         $emailSendEvent->shouldReceive('getContent')
             ->atLeast()->once()
             ->andReturn('foo [' . $toReplace . '|vocative] bar');
-        $emailSendEvent->shouldReceive('setContent')
-            ->atLeast()->once()
-            ->with('foo ' . ($inVocative = 'gux') . ' bar');
-        $nameConverter = $mauticFactory->getKernel()->getContainer()->get('plugin.vocative.name_converter');
-        $nameConverter->shouldReceive('convert')
-            ->with($toVocative)
-            ->andReturn($inVocative);
+        if ($toVocative !== false) {
+            $nameConverter = $mauticFactory->getKernel()->getContainer()->get('plugin.vocative.name_converter');
+            /** @var \Mockery\MockInterface $nameConverter */
+            $nameConverter->shouldReceive('convert')
+                ->with($toVocative)
+                ->andReturn($inVocative = 'qux');
+            $emailSendEvent->shouldReceive('setContent')
+                ->atLeast()->once()
+                ->with('foo ' . $inVocative . ' bar');
+        } else {
+            $nameConverter = $mauticFactory->getKernel()->getContainer()->get('plugin.vocative.name_converter');
+            /** @var \Mockery\MockInterface $nameConverter */
+            $nameConverter->shouldReceive('convert')
+                ->never();
+            $emailSendEvent->shouldReceive('setContent')
+                ->never();
+        }
 
         /** @var EmailSendEvent $emailSendEvent */
         $subscriber->onEmailGenerate($emailSendEvent);
@@ -125,8 +135,17 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
             ->andReturn($container = $this->mockery(\stdClass::class));
         $container->shouldReceive('get')
             ->with('plugin.vocative.name_converter')
-            ->andReturn($nameConverter = $this->mockery(\stdClass::class));
+            ->andReturn($this->mockery(NameToVocativeConverter::class));
 
         return $mauticFactory;
     }
+
+    /**
+     * @test
+     */
+    public function I_got_names_converted_even_if_wrapped_by_white_space()
+    {
+        $this->checkEmailContentConversion("\t\n baz  \t\n ", 'baz');
+    }
+
 }

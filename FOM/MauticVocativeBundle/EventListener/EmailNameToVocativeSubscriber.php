@@ -34,7 +34,7 @@ class EmailNameToVocativeSubscriber extends CommonSubscriber
                  * with name optionally enclosed by [square brackets] as well to match email preview
                  */
                 if (preg_match_all(
-                        '~(?<toReplace>(?:\[|%5B)(?<prefixToKeep>\[*)(?<toVocative>[^\[\]]+)(?<suffixToKeep>\]*)\|vocative(?:\]|%5D))~u',
+                        '~(?<toReplace>(?:\[|%5B)(?<prefixToKeep>\[*)\s*(?<toVocative>[^\[\]]+[^\s])\s*(?<suffixToKeep>\]*)\|vocative(?:\]|%5D))~u',
                         $value,
                         $matches
                     ) > 0
