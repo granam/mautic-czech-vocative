@@ -154,7 +154,15 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
      */
     public function I_do_not_trigger_conversion_by_empty_value()
     {
-        $this->checkEmailContentConversion('', false /* conversion should not eb called */);
+        $this->checkEmailContentConversion('', false /* conversion should not be called */);
+    }
+
+    /**
+     * @test
+     */
+    public function I_got_removed_white_spaces_only_without_conversion_trigger()
+    {
+        $this->checkEmailContentConversion("\n\t\t    \n\t  ", false /* conversion should not be called */);
     }
 
 }

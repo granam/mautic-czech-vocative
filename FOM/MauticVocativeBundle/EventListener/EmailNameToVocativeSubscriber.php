@@ -47,7 +47,7 @@ class EmailNameToVocativeSubscriber extends CommonSubscriber
                     }
                 }
                 // lets remove unused '|vocative' modifiers, like empty ones
-                if (preg_match_all('~(?<toRemove>(?:\[|%5B)(?<toKeep>.*)\|vocative(?:\]|%5D))~u', $value, $matches) > 0) {
+                if (preg_match_all('~(?<toRemove>(?:\[|%5B)\s*(?<toKeep>.*[^\s]?)\s*\|vocative(?:\]|%5D))~u', $value, $matches) > 0) {
                     foreach ($matches['toRemove'] as $index => $toReplace) {
                         $toKeep = $matches['toKeep'][$index];
                         $value = str_replace($toReplace, $toKeep, $value);
