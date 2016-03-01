@@ -11,7 +11,10 @@
 In your Mautic insert into an email template this shortcode around *some name*
 `[some name|vocative]`
 - for example `[Karel|vocative]`
-- or better example `[{leadfield=firstname}|vocative]`
+- or better example `[{leadfield=firstname}|vocative]`  
+hint: use `CTRL+SHIFT+V` to insert copied text without formatting, also check source code of your email template by
+![Mautic source code icon](https://github.com/jaroslavtyc/mautic-bundle-skeleton/blob/master/mautic/app/bundles/CoreBundle/Assets/js/libraries/ckeditor/plugins/sourcedialog/icons/sourcedialog.png)
+button for unwanted formatting
 
 ## Where errors dwell
  If any error happens, first of all, have you **cleared the cache**?
@@ -22,10 +25,10 @@ In your Mautic insert into an email template this shortcode around *some name*
  2. or, if they are more fatal or just Mautic does not catch them (error 500), see your web-server logs, like `/var/log/apache2/error.log`
 
 #Known issues
-If a name with unknown structure is given to convert, the *E* suffix is added.
+If a name ends by non-character (sadly including whitespaces), the *E* suffix is added.
 `[Who am I?|vocative]` = `Who am I?E`
  - on the other hand, also foreign names are converted to czech form
- `[Cassandra|vocative]` = `Cassandro`
+ `[Cassandra|vocative]` = `Cassandro`, `[android|vocative]` = `Androide`
 
 # Credits
 The plugin has been created thanks to sponsor [svetandroida.cz](https://www.svetandroida.cz/)
