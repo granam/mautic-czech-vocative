@@ -3,9 +3,11 @@ namespace MauticPlugin\MauticVocativeBundle\Tests\Integration;
 
 use Mautic\CoreBundle\Factory\MauticFactory;
 use MauticPlugin\MauticVocativeBundle\Integration\FOMVocativeIntegration;
+use MauticPlugin\MauticVocativeBundle\Tests\FOMTestWithMockery;
 
-class FOMVocativeIntegrationTest extends \PHPUnit_Framework_TestCase
+class FOMVocativeIntegrationTest extends FOMTestWithMockery
 {
+
     /**
      * @test
      */
@@ -23,7 +25,7 @@ class FOMVocativeIntegrationTest extends \PHPUnit_Framework_TestCase
      */
     private function createFactory()
     {
-        $factory = \Mockery::mock(MauticFactory::class);
+        $factory = $this->mockery(MauticFactory::class);
 
         return $factory;
     }

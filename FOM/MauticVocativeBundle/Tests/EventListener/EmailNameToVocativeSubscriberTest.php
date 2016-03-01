@@ -6,9 +6,11 @@ use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\EmailSendEvent;
 use Mautic\LeadBundle\EventListener\EmailSubscriber;
 use MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber;
+use MauticPlugin\MauticVocativeBundle\Tests\FOMTestWithMockery;
 
-class EmailNameToVocativeSubscriberTest extends \PHPUnit_Framework_TestCase
+class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
 {
+
     /**
      * @test
      */
@@ -75,9 +77,41 @@ class EmailNameToVocativeSubscriberTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function I_got_names_in_vocative_on_email_send()
+    public function I_got_names_converted_in_email()
     {
-        $mauticFactory = \Mockery::mock(MauticFactory::class);
+        $this->checkEmailContentConversion('baz', 'baz');
+    }
+
+    /**
+     * @param string $toReplace
+     * @param string $toVocative
+     */
+    private function checkEmailContentConversion($toReplace, $toVocative)
+    {
+        $mauticFactory = $this->createMauticFactory();
+        $subscriber = new EmailNameToVocativeSubscriber($mauticFactory);
+        $emailSendEvent = $this->mockery(EmailSendEvent::class);
+        $emailSendEvent->shouldReceive('getContent')
+            ->atLeast()->once()
+            ->andReturn('foo [' . $toReplace . '|vocative] bar');
+        $emailSendEvent->shouldReceive('setContent')
+            ->atLeast()->once()
+            ->with('foo ' . ($inVocative = 'gux') . ' bar');
+        $nameConverter = $mauticFactory->getKernel()->getContainer()->get('plugin.vocative.name_converter');
+        $nameConverter->shouldReceive('convert')
+            ->with($toVocative)
+            ->andReturn($inVocative);
+
+        /** @var EmailSendEvent $emailSendEvent */
+        $subscriber->onEmailGenerate($emailSendEvent);
+    }
+
+    /**
+     * @return \Mockery\MockInterface|MauticFactory
+     */
+    private function createMauticFactory()
+    {
+        $mauticFactory = $this->mockery(MauticFactory::class);
         $mauticFactory->shouldReceive('getTemplating');
         $mauticFactory->shouldReceive('getRequest');
         $mauticFactory->shouldReceive('getSecurity');
@@ -85,27 +119,14 @@ class EmailNameToVocativeSubscriberTest extends \PHPUnit_Framework_TestCase
         $mauticFactory->shouldReceive('getSystemParameters');
         $mauticFactory->shouldReceive('getDispatcher');
         $mauticFactory->shouldReceive('getTranslator');
-        /** @var MauticFactory|\Mockery\MockInterface $mauticFactory */
-        $subscriber = new EmailNameToVocativeSubscriber($mauticFactory);
-        $emailSendEvent = \Mockery::mock(EmailSendEvent::class);
-        $emailSendEvent->shouldReceive('getContent')
-            ->atLeast()->once()
-            ->andReturn('foo [' . ($toVocative = 'baz') . '|vocative] bar');
-        $emailSendEvent->shouldReceive('setContent')
-            ->atLeast()->once()
-            ->with('foo ' . ($inVocative = 'BAZ') . ' bar');
         $mauticFactory->shouldReceive('getKernel')
-            ->andReturn($kernel = \Mockery::mock(\stdClass::class));
+            ->andReturn($kernel = $this->mockery(\stdClass::class));
         $kernel->shouldReceive('getContainer')
-            ->andReturn($container = \Mockery::mock(\stdClass::class));
+            ->andReturn($container = $this->mockery(\stdClass::class));
         $container->shouldReceive('get')
             ->with('plugin.vocative.name_converter')
-            ->andReturn($nameConverter = \Mockery::mock(\stdClass::class));
+            ->andReturn($nameConverter = $this->mockery(\stdClass::class));
 
-        $nameConverter->shouldReceive('convert')
-            ->with($toVocative)
-            ->andReturn($inVocative);
-        /** @var EmailSendEvent $emailSendEvent */
-        $subscriber->onEmailGenerate($emailSendEvent);
+        return $mauticFactory;
     }
 }
