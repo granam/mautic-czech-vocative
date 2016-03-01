@@ -5,9 +5,7 @@ php:
   - hhvm
 
 before_script:
-  - if [[ $TRAVIS_PHP_VERSION =~ ^php ]]; then phpenv config-rm xdebug.ini; fi
-  - /home/travis/.phpenv/versions/$(phpenv version-name)/bin/composer.phar self-update
-  - /home/travis/.phpenv/versions/$(phpenv version-name)/bin/composer.phar update --memory=1G --no-interaction --prefer-dist
+  - if [[ $TRAVIS_PHP_VERSION =~ ^[0-9]+[.][0-9]+$ ]]; then phpenv config-rm xdebug.ini; fi
 
 script:
   - ./vendor/phpunit/phpunit/phpunit -v
