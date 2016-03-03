@@ -43,16 +43,16 @@ class NameToVocativeConverter
         $regexpParts = [
             '~(?<toReplace>',
             [
-                '(?:\[|%5B)', // in square brackets, native or URL encoded
+                '(?:\[|%5B)', // opening square bracket, native or URL encoded
                 [
-                    '[\[\s]*',
-                    '(?<toVocative>[^\[\]]+[^\s\[\]])',
-                    '[\]\s]*',
+                    '[\[\s]*', // redundant opening square brackets and white spaces are removed
+                    '(?<toVocative>[^\[\]]+[^\s\[\]])', // without any square bracket, ending to non-square-bracket and non-white-space
+                    '[\]\s]*', // redundant closing square brackets and white spaces are removed
                     '\|vocative' // with trailing pipe and keyword "vocative"
                 ],
-                '(?:\]|%5D)',
+                '(?:\]|%5D)', // closing square bracket, native or URL encoded
             ],
-            ')~u'
+            ')~u' // u = UTF-8
         ];
         if (preg_match_all(
                 $this->implode($regexpParts),
