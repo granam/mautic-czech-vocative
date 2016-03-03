@@ -25,7 +25,7 @@ class NameToVocativeConverter
     }
 
     /**
-     * Searching for [name|vocative] (enclosed by native or encoded square brackets,
+     * Searching for [name|vocative] (enclosed by native or URL encoded square brackets,
      * with name optionally enclosed by [square brackets] as well to match email preview
      * @param string $value
      * @return string
@@ -40,21 +40,49 @@ class NameToVocativeConverter
 
     private function vocalizeByShortCodes($value)
     {
+        $regexpParts = [
+            '~(?<toReplace>',
+            [
+                '(?:\[|%5B)', // in square brackets, native or URL encoded
+                [
+                    '[\[\s]*',
+                    '(?<toVocative>[^\[\]]+[^\s\[\]])',
+                    '[\]\s]*',
+                    '\|vocative' // with trailing pipe and keyword "vocative"
+                ],
+                '(?:\]|%5D)',
+            ],
+            ')~u'
+        ];
         if (preg_match_all(
-                '~(?<toReplace>(?:\[|%5B)(?<prefixToKeep>\[*)\s*(?<toVocative>[^\[\]]+[^\s])\s*(?<suffixToKeep>\]*)\|vocative(?:\]|%5D))~u',
+                $this->implode($regexpParts),
                 $value,
                 $matches
             ) > 0
         ) {
             foreach ($matches['toReplace'] as $index => $toReplace) {
                 $toVocative = $matches['toVocative'][$index];
-                $prefixToKeep = $matches['prefixToKeep'][$index];
-                $suffixToKeep = $matches['suffixToKeep'][$index];
-                $value = str_replace($toReplace, $prefixToKeep . $this->toVocative($toVocative) . $suffixToKeep, $value);
+                $value = str_replace($toReplace, $this->toVocative($toVocative), $value);
             }
         }
 
         return $value;
+    }
+
+    private function implode(array $values)
+    {
+        return implode(
+            array_map(
+                function ($value) {
+                    if (is_array($value)) {
+                        return $this->implode($value);
+                    }
+
+                    return $value;
+                },
+                $values
+            )
+        );
     }
 
     private function removeEmptyShortCodes($value)

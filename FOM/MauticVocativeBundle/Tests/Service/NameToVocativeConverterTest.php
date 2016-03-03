@@ -48,7 +48,7 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function I_got_names_converted_in_email()
+    public function I_can_vocalize_value()
     {
         $this->checkEmailContentConversion('baz', true /* conversion should be called */, 'baz');
     }
@@ -103,5 +103,23 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
         $withTrailingNonLetters = 'What ? !';
         $this->assertNotRegExp('~[[:alpha:]]$~u', $withTrailingNonLetters);
         $this->checkEmailContentConversion($withTrailingNonLetters, true /* conversion should be called */, $withTrailingNonLetters);
+    }
+
+    /**
+     * @test
+     */
+    public function I_got_redundant_square_brackets_removed_as_well()
+    {
+        $this->checkEmailContentConversion('[doktor]', true /* conversion should be called */, 'doktor');
+        $this->checkEmailContentConversion('doktor]', true /* conversion should be called */, 'doktor');
+        $this->checkEmailContentConversion('[doktor', true /* conversion should be called */, 'doktor');
+    }
+
+    /**
+     * @test
+     */
+    public function I_can_vocalize_even_complex_name()
+    {
+        $this->checkEmailContentConversion("\n\t\t Maria \n Gloria \t Galia Valia ", true /* conversion should be called */, "Maria \n Gloria \t Galia Valia");
     }
 }
