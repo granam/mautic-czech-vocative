@@ -22,52 +22,18 @@ class EmailNameToVocativeSubscriber extends CommonSubscriber
 
     public function onEmailGenerate(EmailSendEvent $event)
     {
-        $event->setContent($this->findAndReplace((array)$event->getContent(true /* with tokens replaced -  to get names */)));
+        // to array and implode solves "sometimes string, sometimes array" return value
+        $toVocalize = implode((array)$event->getContent(true /* with tokens replaced (to get names) */));
+        $vocalized = $this->getConverter()->findAndReplace($toVocalize);
+        $event->setContent($vocalized);
     }
 
-    private function findAndReplace(array $values)
+    /**
+     * @return NameToVocativeConverter
+     */
+    private function getConverter()
     {
-        $replaced = array_map(
-            function ($value) {
-                /*
-                 * searching for [name|vocative] (enclosed by native or encoded square brackets,
-                 * with name optionally enclosed by [square brackets] as well to match email preview
-                 */
-                if (preg_match_all(
-                        '~(?<toReplace>(?:\[|%5B)(?<prefixToKeep>\[*)\s*(?<toVocative>[^\[\]]+[^\s])\s*(?<suffixToKeep>\]*)\|vocative(?:\]|%5D))~u',
-                        $value,
-                        $matches
-                    ) > 0
-                ) {
-                    foreach ($matches['toReplace'] as $index => $toReplace) {
-                        $toVocative = $matches['toVocative'][$index];
-                        $prefixToKeep = $matches['prefixToKeep'][$index];
-                        $suffixToKeep = $matches['suffixToKeep'][$index];
-                        $value = str_replace($toReplace, $prefixToKeep . $this->toVocative($toVocative) . $suffixToKeep, $value);
-                    }
-                }
-                // lets remove unused '|vocative' modifiers, like empty ones
-                if (preg_match_all('~(?<toRemove>(?:\[|%5B)\s*(?<toKeep>.*[^\s]?)\s*\|vocative(?:\]|%5D))~u', $value, $matches) > 0) {
-                    foreach ($matches['toRemove'] as $index => $toReplace) {
-                        $toKeep = $matches['toKeep'][$index];
-                        $value = str_replace($toReplace, $toKeep, $value);
-                    }
-                }
-
-                return $value;
-            },
-            $values
-        );
-
-        return implode($replaced);
-    }
-
-    private function toVocative($value)
-    {
-        /** @var NameToVocativeConverter $converter */
-        $converter = $this->factory->getKernel()->getContainer()->get('plugin.vocative.name_converter');
-
-        return $converter->convert($value);
+        return $this->factory->getKernel()->getContainer()->get('plugin.vocative.name_converter');
     }
 
 }

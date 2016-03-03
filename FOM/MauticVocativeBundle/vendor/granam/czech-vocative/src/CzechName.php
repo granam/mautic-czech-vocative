@@ -1,11 +1,6 @@
 <?php
 namespace MauticPlugin\MauticVocativeBundle\CzechVocative;
 
-define(
-'VOCATIVE_DATA_DIR',
-    dirname(__FILE__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR
-);
-
 class CzechName
 {
     /**
@@ -140,7 +135,7 @@ class CzechName
 
     protected function readSuffixes($file)
     {
-        $filename = VOCATIVE_DATA_DIR . $file;
+        $filename = __DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . $file;
         if (!file_exists($filename))
             throw new \RuntimeException('Data file ' . $filename . 'not found');
 

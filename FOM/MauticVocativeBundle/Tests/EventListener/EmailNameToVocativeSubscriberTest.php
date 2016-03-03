@@ -79,48 +79,37 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
      */
     public function I_got_names_converted_in_email()
     {
-        $this->checkEmailContentConversion('baz', 'baz');
-    }
-
-    /**
-     * @param string $toReplace
-     * @param string $toVocative
-     */
-    private function checkEmailContentConversion($toReplace, $toVocative)
-    {
-        $mauticFactory = $this->createMauticFactory();
+        $mauticFactory = $this->createMauticFactory($toVocalize = 'foo [bar|vocative] baz', $vocalized = 'qux');
         $subscriber = new EmailNameToVocativeSubscriber($mauticFactory);
-        $emailSendEvent = $this->mockery(EmailSendEvent::class);
-        $emailSendEvent->shouldReceive('getContent')
-            ->atLeast()->once()
-            ->andReturn('foo [' . $toReplace . '|vocative] bar');
-        if ($toVocative !== false) {
-            $nameConverter = $mauticFactory->getKernel()->getContainer()->get('plugin.vocative.name_converter');
-            /** @var \Mockery\MockInterface $nameConverter */
-            $nameConverter->shouldReceive('convert')
-                ->with($toVocative)
-                ->andReturn($inVocative = 'qux');
-            $emailSendEvent->shouldReceive('setContent')
-                ->atLeast()->once()
-                ->with('foo ' . $inVocative . ' bar');
-        } else {
-            $nameConverter = $mauticFactory->getKernel()->getContainer()->get('plugin.vocative.name_converter');
-            /** @var \Mockery\MockInterface $nameConverter */
-            $nameConverter->shouldReceive('convert')
-                ->never();
-            $emailSendEvent->shouldReceive('setContent')
-                ->atLeast()->once()
-                ->with('foo  bar');
-        }
-
-        /** @var EmailSendEvent $emailSendEvent */
+        $emailSendEvent = $this->createEmailSentEvent($toVocalize, $vocalized);
         $subscriber->onEmailGenerate($emailSendEvent);
     }
 
     /**
+     * @param string $toVocalize
+     * @param string $vocalized
+     * @return EmailSendEvent|\Mockery\MockInterface $emailSendEvent
+     */
+    private function createEmailSentEvent($toVocalize, $vocalized)
+    {
+        $emailSendEvent = $this->mockery(EmailSendEvent::class);
+        $emailSendEvent->shouldReceive('getContent')
+            ->with(true)// with tokens replaced
+            ->once()
+            ->andReturn($toVocalize);
+        $emailSendEvent->shouldReceive('setContent')
+            ->once()
+            ->with($vocalized);
+
+        return $emailSendEvent;
+    }
+
+    /**
+     * @param string $toVocative
+     * @param string $inVocative
      * @return \Mockery\MockInterface|MauticFactory
      */
-    private function createMauticFactory()
+    private function createMauticFactory($toVocative, $inVocative)
     {
         $mauticFactory = $this->mockery(MauticFactory::class);
         $mauticFactory->shouldReceive('getTemplating');
@@ -136,43 +125,11 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
             ->andReturn($container = $this->mockery(\stdClass::class));
         $container->shouldReceive('get')
             ->with('plugin.vocative.name_converter')
-            ->andReturn($this->mockery(NameToVocativeConverter::class));
+            ->andReturn($nameConverter = $this->mockery(NameToVocativeConverter::class));
+        $nameConverter->shouldReceive('findAndReplace')
+            ->with($toVocative)
+            ->andReturn($inVocative);
 
         return $mauticFactory;
     }
-
-    /**
-     * @test
-     */
-    public function I_got_names_converted_even_if_wrapped_by_white_space()
-    {
-        $this->checkEmailContentConversion($withWhiteSpaces = "\t\n baz  \t\n ", trim($withWhiteSpaces));
-    }
-
-    /**
-     * @test
-     */
-    public function I_do_not_trigger_conversion_by_empty_value()
-    {
-        $this->checkEmailContentConversion('', false /* conversion should not be called */);
-    }
-
-    /**
-     * @test
-     */
-    public function I_got_removed_white_spaces_only_without_conversion_trigger()
-    {
-        $this->checkEmailContentConversion("\n\t\t    \n\t  ", false /* conversion should not be called */);
-    }
-
-    /**
-     * @test
-     */
-    public function I_got_untouched_names_with_trailing_non_letters()
-    {
-        $withTrailingNonLetters = 'What?!';
-        $this->assertNotRegExp('~[[:alpha:]]$~u', $withTrailingNonLetters);
-        $this->checkEmailContentConversion($withTrailingNonLetters, $withTrailingNonLetters);
-    }
-
 }
