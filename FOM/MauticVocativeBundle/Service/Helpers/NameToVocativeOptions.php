@@ -6,11 +6,11 @@ class NameToVocativeOptions
     /**
      * @var string
      */
-    private $maleNameReplacement;
+    private $maleNameAlias;
     /**
      * @var string
      */
-    private $femaleNameReplacement;
+    private $femaleNameAlias;
 
     public static function createFromString($stringOptions)
     {
@@ -19,10 +19,10 @@ class NameToVocativeOptions
         if ($stringOptions !== '') {
             $values = explode(',', $stringOptions);
             if (isset($values[0])) {
-                $options['maleNameReplacement'] = trim($values[0]);
+                $options['maleNameAlias'] = trim($values[0]);
             }
             if (isset($values[1])) {
-                $options['femaleNameReplacement'] = trim($values[1]);
+                $options['femaleNameAlias'] = trim($values[1]);
             }
         }
 
@@ -42,33 +42,33 @@ class NameToVocativeOptions
     /**
      * @return bool
      */
-    public function hasMaleNameReplacement()
+    public function hasMaleNameAlias()
     {
-        return isset($this->maleNameReplacement);
+        return isset($this->maleNameAlias);
     }
 
     /**
      * @return string
      */
-    public function getMaleNameReplacement()
+    public function getMaleNameAlias()
     {
-        return $this->maleNameReplacement;
+        return $this->maleNameAlias;
     }
 
     /**
      * @return bool
      */
-    public function hasFemaleNameReplacement()
+    public function hasFemaleNameAlias()
     {
-        return isset($this->femaleNameReplacement);
+        return isset($this->femaleNameAlias);
     }
 
     /**
      * @return mixed
      */
-    public function getFemaleNameReplacement()
+    public function getFemaleNameAlias()
     {
-        return $this->femaleNameReplacement;
+        return $this->femaleNameAlias;
     }
 
 }
