@@ -8,7 +8,7 @@ php:
 before_script:
   - if [[ $TRAVIS_PHP_VERSION =~ ^[0-9]+[.][0-9]+$ ]]; then phpenv config-rm xdebug.ini; fi
   - /home/travis/.phpenv/versions/$TRAVIS_PHP_VERSION/bin/composer self-update
-  - php -dmemory-limit=2G /home/travis/.phpenv/versions/$TRAVIS_PHP_VERSION/bin/composer update --no-interaction
+  - php -dmemory-limit=2G /home/travis/.phpenv/versions/$TRAVIS_PHP_VERSION/bin/composer update --no-interaction --profile --prefer-source
 
 script:
   - ./vendor/phpunit/phpunit/phpunit -v
