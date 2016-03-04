@@ -1,13 +1,4 @@
-#Install
-
-1. Manually copy the `MauticVocativeBundle` directory into your Mautic `plugins` directory.
- - for example `/var/www/mautic/plugins/MauticVocativeBundle`.
-2. Clear Mautic cache by `./app/console cache:clear` or just delete the `app/cache` dir.
-3. Log in to your Mautic as an admin, open cogwheel menu in the right top corner and choose *Plugins*
-4. Click *Install/Upgrade Plugins*
- - if everything goes well, you got new plugin *FOMVocative*.
-
-#Usage
+# Usage
 In your Mautic insert into an email template this shortcode around *some name*
 `[some name|vocative]`
 - for example `[Karel|vocative]`
@@ -17,7 +8,25 @@ hint: use `CTRL+SHIFT+V` to insert copied text without formatting, also check so
 button for unwanted formatting
 - also foreign and non-human names are converted to czech form `[Cassandra|vocative]` = `Cassandro`, `[android|vocative]` = `Androide`
 
-## Where errors dwell
+### Aliases
+You can also set aliases to be used (and vocalized) instead of the name.
+- `[{leadfield=firstname}|vocative(sirius,andromeda)]` leading into
+    - if `firstname` is male, let's say Roman, the result is `Siriusi`
+    - if `firstname` is female, for example Gloria, the result is `Andromedo`
+- if you omit one of gender-dependent alias, the original name is used
+    - `[richard|vocative(,For gentlemen only!)]` = `Richarde`
+    - `[monika|vocative(,For gentlemen only!)]` = `For gentlemen only!` (because of trailing non-character the string is left untouched)
+
+# Install
+
+1. Manually copy the `MauticVocativeBundle` directory into your Mautic `plugins` directory.
+ - for example `/var/www/mautic/plugins/MauticVocativeBundle`.
+2. Clear Mautic cache by `./app/console cache:clear` or just delete the `app/cache` dir.
+3. Log in to your Mautic as an admin, open cogwheel menu in the right top corner and choose *Plugins*
+4. Click *Install/Upgrade Plugins*
+ - if everything goes well, you got new plugin *FOMVocative*.
+
+## Troubleshooting
  If any error happens, first of all, have you **cleared the cache**?
  
  Otherwise check the logs for what happened:
