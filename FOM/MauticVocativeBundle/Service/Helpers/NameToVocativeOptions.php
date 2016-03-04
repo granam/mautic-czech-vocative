@@ -19,10 +19,10 @@ class NameToVocativeOptions
         if ($stringOptions !== '') {
             $values = explode(',', $stringOptions);
             if (isset($values[0])) {
-                $options['maleNameReplacement'] = $values[0];
+                $options['maleNameReplacement'] = trim($values[0]);
             }
             if (isset($values[1])) {
-                $options['femaleNameReplacement'] = $values[1];
+                $options['femaleNameReplacement'] = trim($values[1]);
             }
         }
 

@@ -23,9 +23,10 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @param $expectedName
      * @param $inVocative
+     * @param bool $isMale
      * @return CzechName
      */
-    private function createCzechName($expectedName, $inVocative)
+    private function createCzechName($expectedName, $inVocative, $isMale = true)
     {
         $czechName = $this->mockery(CzechName::class);
         if ($inVocative !== false) {
@@ -33,7 +34,7 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
                 ->with($expectedName)
                 ->andReturn($inVocative);
             $czechName->shouldReceive('isMale')
-                ->andReturn(true);
+                ->andReturn($isMale);
         } else {
             $czechName->shouldReceive('vocative')
                 ->never();
@@ -58,36 +59,53 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @param string $toConvert
      * @param bool $conversionShouldHappen
-     * @param string $toVocative
-     * @param bool $toVocativeIsAlias
+     * @param string $nameOrMaleAlias
+     * @param string $femaleAlias
+     * @param string $gender
      */
     private function checkEmailContentConversion(
         $toConvert,
         $conversionShouldHappen,
-        $toVocative = '',
-        $toVocativeIsAlias = false // TODO male and female distinction
+        $nameOrMaleAlias = '',
+        $femaleAlias = '',
+        $gender = ''
     )
     {
         $spaces = ['', "\n\t ", " \t\n\t "]; // to test white space combinations
         foreach ($spaces as $space1) {
             foreach ($spaces as $space2) {
-                $aliasPartCombinations = [];
-                if ($toVocativeIsAlias) {
-                    $aliasPartCombinations[] = "{$space1}({$space2}{$toVocative}{$space1}){$space2}";
+                if (in_array($gender, ['male', 'female'])) {
+                    $optionsCombination = ["{$space1}({$space2}{$nameOrMaleAlias}{$space1},{$space2}{$femaleAlias}{$space1}){$space2}",];
+                    if ($gender === 'male') {
+                        $optionsCombination[] = "{$space1}({$space2}{$nameOrMaleAlias}{$space1}){$space2}"; // without female alias at all
+                    }
                 } else {
-                    // with and without parenthesis
-                    $aliasPartCombinations[] = "({$space1}{$space2})";
-                    $aliasPartCombinations[] = '';
+                    $optionsCombination = ["({$space1}{$space2})", ''];// with and without parenthesis
                 }
-                foreach ($aliasPartCombinations as $aliasPartCombination) {
-                    $wrappedByShortCode = "foo{$space1}[{$space2}{$toConvert}{$space1}|vocative{$space2}{$aliasPartCombination}{$space1}]{$space2}bar";
-                    $nameConverter = new NameToVocativeConverter(
-                        $this->createCzechName($toVocative, ($conversionShouldHappen ? 'qux' : false))
-                    );
-                    $this->assertSame(
-                        'foo' . $space1 . ($conversionShouldHappen ? 'qux' : '') . $space2 . 'bar',
-                        $nameConverter->findAndReplace($wrappedByShortCode)
-                    );
+                foreach ($optionsCombination as $options) {
+                    foreach (range(1, 3) as $openingBracketCount) {
+                        foreach (range(1, 3) as $closingBracketCount) {
+                            $wrappedByShortCode = "foo{$space1}"; // leading junk
+                            $wrappedByShortCode .= str_repeat('[', $openingBracketCount); // 1+ opening bracket
+                            $wrappedByShortCode .= "{$space2}{$toConvert}{$space1}"; // name to vocative itself
+                            $wrappedByShortCode .= "|vocative{$space2}{$options}{$space1}"; // modifier with optional options
+                            $wrappedByShortCode .= str_repeat(']', $closingBracketCount); // 1+ closing bracket
+                            $wrappedByShortCode .= "{$space2}bar"; // trailing junk
+                            $nameConverter = new NameToVocativeConverter(
+                                $this->createCzechName(
+                                    $gender !== 'female' ? $nameOrMaleAlias : $femaleAlias,
+                                    ($conversionShouldHappen ? 'qux' : false),
+                                    $gender !== 'female'
+                                )
+                            );
+                            $this->assertSame(
+                                'foo' . $space1 . str_repeat('[', $openingBracketCount - 1)
+                                . ($conversionShouldHappen ? 'qux' : '')
+                                . str_repeat(']', $closingBracketCount - 1) . $space2 . 'bar',
+                                $nameConverter->findAndReplace($wrappedByShortCode)
+                            );
+                        }
+                    }
                 }
             }
         }
@@ -131,16 +149,6 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function I_got_redundant_square_brackets_removed_as_well()
-    {
-        $this->checkEmailContentConversion('[doktor]', true /* conversion should be called */, 'doktor');
-        $this->checkEmailContentConversion('doktor]', true /* conversion should be called */, 'doktor');
-        $this->checkEmailContentConversion('[doktor', true /* conversion should be called */, 'doktor');
-    }
-
-    /**
-     * @test
-     */
     public function I_can_vocalize_even_complex_name()
     {
         $this->checkEmailContentConversion("\n\t\t Maria \n Gloria \t Galia Valia ", true /* conversion should be called */, "Maria \n Gloria \t Galia Valia");
@@ -149,8 +157,21 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function I_can_replace_name_by_vocalized_alias()
+    public function I_can_replace_name_by_vocalized_gender_dependent_alias()
     {
-        $this->checkEmailContentConversion('Roman', true /* conversion should be called */, 'Romulus', true /* Romulus is alias */);
+        $this->checkEmailContentConversion(
+            'Roman',
+            true /* conversion should be called */,
+            'Romulus', // male alias
+            'She-wolf', // female alias
+            'male'
+        );
+        $this->checkEmailContentConversion(
+            'Roman',
+            true /* conversion should be called */,
+            'Romulus', // male alias
+            'She-wolf', // female alias
+            'female'
+        );
     }
 }

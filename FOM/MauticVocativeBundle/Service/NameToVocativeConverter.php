@@ -56,16 +56,18 @@ class NameToVocativeConverter
             [
                 '(?:\[|%5B)', // opening bracket, native or URL encoded
                 [
-                    '[\[\s]*', // redundant opening brackets (TODO ?) and white spaces are removed
+                    '\s*', // leading white spaces are trimmed
                     '(?<toVocative>[^\[\]]+[^\s\[\]])', // without any bracket, ending by non-bracket and non-white-space
-                    '[\]\s]*', // redundant closing brackets and white spaces are removed
-                    '\|vocative\s*', // with trailing (relatively to name) pipe and keyword "vocative"
+                    '[\s]*', // redundant closing brackets and white spaces are removed
+                    '\|\s*vocative\s*', // with trailing (relatively to name) pipe and keyword "vocative"
                     '(?:\(+', // options are enclosed in parenthesis
                     [
-                        '(?<options>[^\)\]]+)?' // optional values of options with fail-save by excluded right bracket in case of missing closing parenthesis
+                        '\s*',
+                        '(?<options>[^\)\]]*[^\)\]\s])?', // optional values of options with fail-save by excluded right bracket in case of missing closing parenthesis
+                        '\s*',
                     ],
                     '\)*)?', // last parenthesis can be (but should not be) omitted, whole options are optional
-                    '\s*', // trailing white spaces are thrown away
+                    '\s*', // trailing white spaces are trimmed
                 ],
                 '(?:\]|%5D)', // closing bracket, native or URL encoded
             ],
@@ -94,8 +96,8 @@ class NameToVocativeConverter
 
     private function removeEmptyShortCodes($value)
     {
-        if (preg_match_all('~(?<toRemove>(?:\[|%5B)\s*(?<toKeep>.*[^\s]?)\s*\|vocative[^\]]*(?:\]|%5D))~u', $value, $matches) > 0) {
-            foreach ($matches['toRemove'] as $index => $toReplace) {
+        if (preg_match_all('~(?<toReplace>(?:\[|%5B)\s*(?<toKeep>[^\[]+[^\s])?\s*\|\s*vocative[^\]]*(?:\]|%5D))~u', $value, $matches) > 0) {
+            foreach ($matches['toReplace'] as $index => $toReplace) {
                 $toKeep = $matches['toKeep'][$index];
                 $value = str_replace($toReplace, $toKeep, $value);
             }
