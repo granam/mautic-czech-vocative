@@ -2,6 +2,8 @@
 namespace MauticPlugin\MauticVocativeBundle\Service;
 
 use MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName;
+use MauticPlugin\MauticVocativeBundle\Service\Helpers\NameToVocativeOptions;
+use MauticPlugin\MauticVocativeBundle\Service\Helpers\RecursiveImplode;
 
 class NameToVocativeConverter
 {
@@ -17,10 +19,19 @@ class NameToVocativeConverter
 
     /**
      * @param string $name
+     * @param NameToVocativeOptions|null $options
      * @return string
      */
-    public function toVocative($name)
+    public function toVocative($name, NameToVocativeOptions $options = null)
     {
+        if ($options !== null) {
+            if ($options->hasMaleNameReplacement() && $this->name->isMale($name)) {
+                $name = $options->getMaleNameReplacement();
+            } else if ($options->hasFemaleNameReplacement() && !$this->name->isMale($name)) {
+                $name = $options->getFemaleNameReplacement();
+            }
+        }
+
         return $this->name->vocative($name);
     }
 
@@ -41,53 +52,49 @@ class NameToVocativeConverter
     private function vocalizeByShortCodes($value)
     {
         $regexpParts = [
-            '~(?<toReplace>',
+            '(?<toReplace>',
             [
-                '(?:\[|%5B)', // opening square bracket, native or URL encoded
+                '(?:\[|%5B)', // opening bracket, native or URL encoded
                 [
-                    '[\[\s]*', // redundant opening square brackets and white spaces are removed
-                    '(?<toVocative>[^\[\]]+[^\s\[\]])', // without any square bracket, ending to non-square-bracket and non-white-space
-                    '[\]\s]*', // redundant closing square brackets and white spaces are removed
-                    '\|vocative' // with trailing pipe and keyword "vocative"
+                    '[\[\s]*', // redundant opening brackets (TODO ?) and white spaces are removed
+                    '(?<toVocative>[^\[\]]+[^\s\[\]])', // without any bracket, ending by non-bracket and non-white-space
+                    '[\]\s]*', // redundant closing brackets and white spaces are removed
+                    '\|vocative\s*', // with trailing (relatively to name) pipe and keyword "vocative"
+                    '(?:\(+', // options are enclosed in parenthesis
+                    [
+                        '(?<options>[^\)\]]+)?' // optional values of options with fail-save by excluded right bracket in case of missing closing parenthesis
+                    ],
+                    '\)*)?', // last parenthesis can be (but should not be) omitted, whole options are optional
+                    '\s*', // trailing white spaces are thrown away
                 ],
-                '(?:\]|%5D)', // closing square bracket, native or URL encoded
+                '(?:\]|%5D)', // closing bracket, native or URL encoded
             ],
-            ')~u' // u = UTF-8
+            ')'
         ];
+        $regexp = '~' . RecursiveImplode::implode($regexpParts) . '~u'; // u = UTF-8
         if (preg_match_all(
-                $this->implode($regexpParts),
+                $regexp,
                 $value,
                 $matches
             ) > 0
         ) {
             foreach ($matches['toReplace'] as $index => $toReplace) {
                 $toVocative = $matches['toVocative'][$index];
-                $value = str_replace($toReplace, $this->toVocative($toVocative), $value);
+                $stringOptions = $matches['options'][$index];
+                $value = str_replace(
+                    $toReplace,
+                    $this->toVocative($toVocative, NameToVocativeOptions::createFromString($stringOptions)),
+                    $value
+                );
             }
         }
 
         return $value;
     }
 
-    private function implode(array $values)
-    {
-        return implode(
-            array_map(
-                function ($value) {
-                    if (is_array($value)) {
-                        return $this->implode($value);
-                    }
-
-                    return $value;
-                },
-                $values
-            )
-        );
-    }
-
     private function removeEmptyShortCodes($value)
     {
-        if (preg_match_all('~(?<toRemove>(?:\[|%5B)\s*(?<toKeep>.*[^\s]?)\s*\|vocative(?:\]|%5D))~u', $value, $matches) > 0) {
+        if (preg_match_all('~(?<toRemove>(?:\[|%5B)\s*(?<toKeep>.*[^\s]?)\s*\|vocative[^\]]*(?:\]|%5D))~u', $value, $matches) > 0) {
             foreach ($matches['toRemove'] as $index => $toReplace) {
                 $toKeep = $matches['toKeep'][$index];
                 $value = str_replace($toReplace, $toKeep, $value);

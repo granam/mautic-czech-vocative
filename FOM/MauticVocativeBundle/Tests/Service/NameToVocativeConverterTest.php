@@ -32,6 +32,8 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
             $czechName->shouldReceive('vocative')
                 ->with($expectedName)
                 ->andReturn($inVocative);
+            $czechName->shouldReceive('isMale')
+                ->andReturn(true);
         } else {
             $czechName->shouldReceive('vocative')
                 ->never();
@@ -57,17 +59,38 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
      * @param string $toConvert
      * @param bool $conversionShouldHappen
      * @param string $toVocative
+     * @param bool $toVocativeIsAlias
      */
-    private function checkEmailContentConversion($toConvert, $conversionShouldHappen, $toVocative = '')
+    private function checkEmailContentConversion(
+        $toConvert,
+        $conversionShouldHappen,
+        $toVocative = '',
+        $toVocativeIsAlias = false // TODO male and female distinction
+    )
     {
-        $wrappedByShortCode = "foo [$toConvert|vocative] bar";
-        $nameConverter = new NameToVocativeConverter(
-            $this->createCzechName($toVocative, ($conversionShouldHappen ? 'qux' : false))
-        );
-        $this->assertSame(
-            'foo ' . ($conversionShouldHappen ? 'qux' : '') . ' bar',
-            $nameConverter->findAndReplace($wrappedByShortCode)
-        );
+        $spaces = ['', "\n\t ", " \t\n\t "]; // to test white space combinations
+        foreach ($spaces as $space1) {
+            foreach ($spaces as $space2) {
+                $aliasPartCombinations = [];
+                if ($toVocativeIsAlias) {
+                    $aliasPartCombinations[] = "{$space1}({$space2}{$toVocative}{$space1}){$space2}";
+                } else {
+                    // with and without parenthesis
+                    $aliasPartCombinations[] = "({$space1}{$space2})";
+                    $aliasPartCombinations[] = '';
+                }
+                foreach ($aliasPartCombinations as $aliasPartCombination) {
+                    $wrappedByShortCode = "foo{$space1}[{$space2}{$toConvert}{$space1}|vocative{$space2}{$aliasPartCombination}{$space1}]{$space2}bar";
+                    $nameConverter = new NameToVocativeConverter(
+                        $this->createCzechName($toVocative, ($conversionShouldHappen ? 'qux' : false))
+                    );
+                    $this->assertSame(
+                        'foo' . $space1 . ($conversionShouldHappen ? 'qux' : '') . $space2 . 'bar',
+                        $nameConverter->findAndReplace($wrappedByShortCode)
+                    );
+                }
+            }
+        }
     }
 
     /**
@@ -121,5 +144,13 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
     public function I_can_vocalize_even_complex_name()
     {
         $this->checkEmailContentConversion("\n\t\t Maria \n Gloria \t Galia Valia ", true /* conversion should be called */, "Maria \n Gloria \t Galia Valia");
+    }
+
+    /**
+     * @test
+     */
+    public function I_can_replace_name_by_vocalized_alias()
+    {
+        $this->checkEmailContentConversion('Roman', true /* conversion should be called */, 'Romulus', true /* Romulus is alias */);
     }
 }
