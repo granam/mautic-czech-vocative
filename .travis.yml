@@ -2,13 +2,14 @@ language: php
 php:
   - 5.6
   - 5.5
+  - 5.4
   - hhvm
 
 before_script:
   - if [[ $TRAVIS_PHP_VERSION =~ ^[0-9]+[.][0-9]+$ ]]; then phpenv config-rm xdebug.ini; fi
   - composer self-update
   - composerPath=`composer --help | grep 'php .*composer.* help list' | grep -Po '[^ ]+composer'`
-  - php -dmemory-limit=512M $composerPath update --no-interaction --prefer-dist
+  - php -dmemory-limit=2G $composerPath update --no-interaction --prefer-dist
 
 script:
   - ./vendor/phpunit/phpunit/phpunit -v

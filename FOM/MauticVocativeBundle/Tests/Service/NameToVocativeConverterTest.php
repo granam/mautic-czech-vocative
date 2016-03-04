@@ -28,7 +28,7 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
      */
     private function createCzechName($expectedName, $inVocative, $isMale = true)
     {
-        $czechName = $this->mockery(CzechName::class);
+        $czechName = $this->mockery('\MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName');
         if ($inVocative !== false) {
             $czechName->shouldReceive('vocative')
                 ->with($expectedName)

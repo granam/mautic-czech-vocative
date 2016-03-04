@@ -6,7 +6,6 @@ use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\EmailSendEvent;
 use Mautic\LeadBundle\EventListener\EmailSubscriber;
 use MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber;
-use MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter;
 use MauticPlugin\MauticVocativeBundle\Tests\FOMTestWithMockery;
 
 class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
@@ -92,7 +91,7 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
      */
     private function createEmailSentEvent($toVocalize, $vocalized)
     {
-        $emailSendEvent = $this->mockery(EmailSendEvent::class);
+        $emailSendEvent = $this->mockery('\Mautic\EmailBundle\Event\EmailSendEvent');
         $emailSendEvent->shouldReceive('getContent')
             ->with(true)// with tokens replaced
             ->once()
@@ -111,7 +110,7 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
      */
     private function createMauticFactory($toVocative, $inVocative)
     {
-        $mauticFactory = $this->mockery(MauticFactory::class);
+        $mauticFactory = $this->mockery('\Mautic\CoreBundle\Factory\MauticFactory');
         $mauticFactory->shouldReceive('getTemplating');
         $mauticFactory->shouldReceive('getRequest');
         $mauticFactory->shouldReceive('getSecurity');
@@ -120,12 +119,12 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
         $mauticFactory->shouldReceive('getDispatcher');
         $mauticFactory->shouldReceive('getTranslator');
         $mauticFactory->shouldReceive('getKernel')
-            ->andReturn($kernel = $this->mockery(\stdClass::class));
+            ->andReturn($kernel = $this->mockery('\stdClass'));
         $kernel->shouldReceive('getContainer')
-            ->andReturn($container = $this->mockery(\stdClass::class));
+            ->andReturn($container = $this->mockery('\stdClass'));
         $container->shouldReceive('get')
             ->with('plugin.vocative.name_converter')
-            ->andReturn($nameConverter = $this->mockery(NameToVocativeConverter::class));
+            ->andReturn($nameConverter = $this->mockery('\MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter'));
         $nameConverter->shouldReceive('findAndReplace')
             ->with($toVocative)
             ->andReturn($inVocative);

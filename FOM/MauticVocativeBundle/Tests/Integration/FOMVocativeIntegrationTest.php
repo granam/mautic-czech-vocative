@@ -15,7 +15,7 @@ class FOMVocativeIntegrationTest extends FOMTestWithMockery
     {
         $integration = new FOMVocativeIntegration($this->createFactory());
         $this->assertSame(
-            $this->parseExpectedName(static::class),
+            $this->parseExpectedName(get_called_class()),
             $integration->getName()
         );
     }
@@ -25,7 +25,7 @@ class FOMVocativeIntegrationTest extends FOMTestWithMockery
      */
     private function createFactory()
     {
-        $factory = $this->mockery(MauticFactory::class);
+        $factory = $this->mockery('\Mautic\CoreBundle\Factory\MauticFactory');
 
         return $factory;
     }
