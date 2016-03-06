@@ -25,14 +25,18 @@ class NameToVocativeConverter
     public function toVocative($name, NameToVocativeOptions $options = null)
     {
         if ($options !== null) {
-            if ($options->hasMaleNameAlias() && $this->name->isMale($name)) {
-                $name = $options->getMaleNameAlias();
-            } else if ($options->hasFemaleNameAlias() && !$this->name->isMale($name)) {
-                $name = $options->getFemaleNameAlias();
+            if ($options->hasMaleAlias() && $this->name->isMale($name)) {
+                $name = $options->getMaleAlias();
+            } else if ($options->hasFemaleAlias() && !$this->name->isMale($name)) {
+                $name = $options->getFemaleAlias();
             }
         }
+        $decodedName = html_entity_decode($name);
+        if ($decodedName === $name) {
+            return $this->name->vocative($name);
+        }
 
-        return $this->name->vocative($name);
+        return htmlentities($this->name->vocative($decodedName));
     }
 
     /**

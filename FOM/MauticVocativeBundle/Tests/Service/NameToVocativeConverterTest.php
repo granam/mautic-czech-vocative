@@ -31,7 +31,7 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
         $czechName = $this->mockery('\MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName');
         if ($inVocative !== false) {
             $czechName->shouldReceive('vocative')
-                ->with($expectedName)
+                ->with(html_entity_decode($expectedName))
                 ->andReturn($inVocative);
             $czechName->shouldReceive('isMale')
                 ->andReturn($isMale);
@@ -94,13 +94,23 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
                             $nameConverter = new NameToVocativeConverter(
                                 $this->createCzechName(
                                     $gender !== 'female' ? $nameOrMaleAlias : $femaleAlias,
-                                    ($conversionShouldHappen ? 'qux' : false),
+                                    ($conversionShouldHappen
+                                        ? 'Příliš žluťkoučký kůň úpěl ďábelské ódy'
+                                        : false
+                                    ),
                                     $gender !== 'female'
                                 )
                             );
+                            $vocalizedString = '';
+                            if ($conversionShouldHappen) {
+                                $vocalizedString = 'Příliš žluťkoučký kůň úpěl ďábelské ódy';
+                                if ($toConvert !== $nameOrMaleAlias && html_entity_decode($toConvert) === $nameOrMaleAlias) {
+                                    $vocalizedString = htmlentities($vocalizedString);
+                                }
+                            }
                             $this->assertSame(
                                 'foo' . $space1 . str_repeat('[', $openingBracketCount - 1)
-                                . ($conversionShouldHappen ? 'qux' : '')
+                                . $vocalizedString
                                 . str_repeat(']', $closingBracketCount - 1) . $space2 . 'bar',
                                 $nameConverter->findAndReplace($wrappedByShortCode)
                             );
@@ -174,4 +184,13 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
             'female'
         );
     }
+
+    /**
+     * @test
+     */
+    public function I_can_vocalize_html_encoded_name()
+    {
+        $this->checkEmailContentConversion('androiď&aacute;k', true /* conversion should be called */, 'androiďák');
+    }
+
 }
