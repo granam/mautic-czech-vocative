@@ -4,13 +4,13 @@ namespace MauticPlugin\MauticVocativeBundle\Service\Helpers;
 class NameToVocativeOptions
 {
     /**
-     * @var string
+     * @var string|null
      */
-    private $maleNameAlias;
+    private $maleAlias;
     /**
-     * @var string
+     * @var string|null
      */
-    private $femaleNameAlias;
+    private $femaleAlias;
 
     public static function createFromString($stringOptions)
     {
@@ -19,10 +19,16 @@ class NameToVocativeOptions
         if ($stringOptions !== '') {
             $values = explode(',', $stringOptions);
             if (isset($values[0])) {
-                $options['maleNameAlias'] = trim($values[0]);
+                $value = trim($values[0]);
+                if ($value !== '') {
+                    $options['maleAlias'] = $value;
+                }
             }
             if (isset($values[1])) {
-                $options['femaleNameAlias'] = trim($values[1]);
+                $value = trim($values[1]);
+                if ($value !== '') {
+                    $options['femaleAlias'] = $value;
+                }
             }
         }
 
@@ -42,33 +48,33 @@ class NameToVocativeOptions
     /**
      * @return bool
      */
-    public function hasMaleNameAlias()
+    public function hasMaleAlias()
     {
-        return isset($this->maleNameAlias);
+        return isset($this->maleAlias);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMaleNameAlias()
+    public function getMaleAlias()
     {
-        return $this->maleNameAlias;
+        return $this->maleAlias;
     }
 
     /**
      * @return bool
      */
-    public function hasFemaleNameAlias()
+    public function hasFemaleAlias()
     {
-        return isset($this->femaleNameAlias);
+        return isset($this->femaleAlias);
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getFemaleNameAlias()
+    public function getFemaleAlias()
     {
-        return $this->femaleNameAlias;
+        return $this->femaleAlias;
     }
 
 }
