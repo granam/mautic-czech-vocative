@@ -18,7 +18,7 @@ return [
             ],
             'plugin.vocative.czech_name' => [
                 'class' => 'CzechVocative\CzechName',
-                'factory' => ['MauticPlugin\MauticVocativeBundle\Tests\Service\NameFactory', 'createCzechName']
+                'factory' => ['MauticPlugin\MauticVocativeBundle\Service\NameFactory', 'createCzechName']
             ]
         ]
     ],

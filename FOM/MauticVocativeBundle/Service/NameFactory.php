@@ -1,7 +1,7 @@
 <?php
-namespace MauticPlugin\MauticVocativeBundle\Tests\Service;
+namespace MauticPlugin\MauticVocativeBundle\Service;
 
-use CzechVocative\CzechName;
+use MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName;
 
 class NameFactory
 {
