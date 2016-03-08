@@ -1,3 +1,7 @@
+# Compatibility
+**Not working with [Mautic 1.3.0](https://www.mautic.org/community/index.php/2872-mautic-1-3-0-released/0)** (working on it, 2016-03-08)
+Tested with Mautic 1.2.4
+
 # Usage
 In your Mautic insert into an email template this shortcode around *some name*
 `[some name|vocative]`
