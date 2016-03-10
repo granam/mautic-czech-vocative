@@ -60,9 +60,9 @@ class NameToVocativeConverter
             [
                 '(?:\[|%5B)', // opening bracket, native or URL encoded
                 [
-                    '\s*', // leading white spaces are trimmed
-                    '(?<toVocative>[^\[\]]+[^\s\[\]])', // without any bracket, ending by non-bracket and non-white-space
-                    '[\s]*', // redundant closing brackets and white spaces are removed
+                    '\s*', // leading white characters are trimmed
+                    '(?<toVocative>[^\[\]]+[^\s\[\]])', // without any bracket, ending by non-bracket and non-white-character
+                    '[\s]*', // redundant closing brackets and white characters are removed
                     '\|\s*vocative\s*', // with trailing (relatively to name) pipe and keyword "vocative"
                     '(?:\(+', // options are enclosed in parenthesis
                     [
@@ -71,7 +71,7 @@ class NameToVocativeConverter
                         '\s*',
                     ],
                     '\)*)?', // last parenthesis can be (but should not be) omitted, whole options are optional
-                    '\s*', // trailing white spaces are trimmed
+                    '\s*', // trailing white characters are trimmed
                 ],
                 '(?:\]|%5D)', // closing bracket, native or URL encoded
             ],
@@ -100,7 +100,21 @@ class NameToVocativeConverter
 
     private function removeEmptyShortCodes($value)
     {
-        if (preg_match_all('~(?<toReplace>(?:\[|%5B)\s*(?<toKeep>[^\[]+[^\s])?\s*\|\s*vocative[^\]]*(?:\]|%5D))~u', $value, $matches) > 0) {
+        $regexpParts = [
+            '(?<toReplace>',
+            [
+                '(?:\[|%5B)', // opening bracket, native or URL encoded
+                '\s*', // optional leading white character(s)
+                '(?<toKeep>[^|]*[^\s|])?', // do not delete string before pipe (but trim it)
+                '\s*\|\s*vocative\s*', // pipe and "vocative" keyword, optionally surrounded by white characters
+                '(?:\s*\([^)]*\))?', // optional options
+                '\s*', // optional trailing white character(s)
+                '(?:\]|%5D)' // closing bracket, native or URL encoded
+            ],
+            ')'
+        ];
+        $regexp = '~' . RecursiveImplode::implode($regexpParts) . '~u'; // u = UTF-8
+        if (preg_match_all($regexp, $value, $matches) > 0) {
             foreach ($matches['toReplace'] as $index => $toReplace) {
                 $toKeep = $matches['toKeep'][$index];
                 $value = str_replace($toReplace, $toKeep, $value);

@@ -17,7 +17,7 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
     public function I_can_convert_name_to_vocative()
     {
         $service = new NameToVocativeConverter($this->createCzechName($name = 'karel', $inVocative = 'foo'));
-        $this->assertEquals($service->toVocative($name), $inVocative);
+        self::assertEquals($service->toVocative($name), $inVocative);
     }
 
     /**
@@ -108,7 +108,7 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
                                     $vocalizedString = htmlentities($vocalizedString);
                                 }
                             }
-                            $this->assertSame(
+                            self::assertSame(
                                 'foo' . $space1 . str_repeat('[', $openingBracketCount - 1)
                                 . $vocalizedString
                                 . str_repeat(']', $closingBracketCount - 1) . $space2 . 'bar',
@@ -152,7 +152,7 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
     public function I_got_untouched_names_with_trailing_non_letters()
     {
         $withTrailingNonLetters = 'What ? !';
-        $this->assertNotRegExp('~[[:alpha:]]$~u', $withTrailingNonLetters);
+        self::assertNotRegExp('~[[:alpha:]]$~u', $withTrailingNonLetters);
         $this->checkEmailContentConversion($withTrailingNonLetters, true /* conversion should be called */, $withTrailingNonLetters);
     }
 
@@ -191,6 +191,71 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
     public function I_can_vocalize_html_encoded_name()
     {
         $this->checkEmailContentConversion('androiď&aacute;k', true /* conversion should be called */, 'androiďák');
+    }
+
+    /**
+     * @test
+     */
+    public function I_got_vocalized_content_in_complex_string()
+    {
+        $nameConverter = new NameToVocativeConverter($this->createSimpleCzechName($replacement = 'foo'));
+        self::assertSame(<<<HTML
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<p><a href="http://example.com/?[Alois]">XSS for free!&nbsp;</a></p><!-- wrong -->
+
+<div><a href="http://example.com/?{$replacement}">Click on me&nbsp;</a></div>
+
+<span>[First Name]</span><!-- wrong again -->
+
+<p>{$replacement}</p>
+
+<p></p>
+<div></div>
+</body>
+</html>
+HTML
+            ,
+            $nameConverter->findAndReplace(<<<HTML
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<p><a href="http://example.com/?%5B[Alois]|vocative%5D">XSS for free!&nbsp;</a></p><!-- wrong -->
+
+<div><a href="http://example.com/?%5BKarel|vocative%5D">Click on me&nbsp;</a></div>
+
+<span>[[First Name]|vocative]</span><!-- wrong again -->
+
+<p>[fitnesačka|vocative(androiďačka)]</p>
+
+<p>[|vocative]</p>
+<div>[    | vocative ( Alone in the dark, Alice ) ]</div>
+</body>
+</html>
+HTML
+            )
+        );
+    }
+
+    /**
+     * @param string $toVocative
+     * @return CzechName|\Mockery\MockInterface
+     */
+    private function createSimpleCzechName($toVocative = 'foo')
+    {
+        /** @var CzechName|\Mockery\MockInterface $czechName */
+        $czechName = $this->mockery('\MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName');
+        $czechName->shouldReceive('isMale')
+            ->andReturn(true);
+        $czechName->shouldReceive('vocative')
+            ->andReturn($toVocative);
+
+        return $czechName;
     }
 
 }

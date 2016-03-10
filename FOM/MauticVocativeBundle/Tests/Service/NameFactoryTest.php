@@ -12,6 +12,6 @@ class NameFactoryTest extends \PHPUnit_Framework_TestCase
     public function I_can_create_name_by_factory()
     {
         $czechName = NameFactory::createCzechName();
-        $this->assertInstanceOf(CzechName::class, $czechName);
+        self::assertInstanceOf(CzechName::class, $czechName);
     }
 }

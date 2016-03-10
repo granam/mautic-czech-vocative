@@ -16,7 +16,7 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
      */
     public function Conversion_reacts_both_on_send_and_view_of_email()
     {
-        $this->assertEquals(
+        self::assertEquals(
             array_keys(EmailNameToVocativeSubscriber::getSubscribedEvents()),
             [EmailEvents::EMAIL_ON_SEND, EmailEvents::EMAIL_ON_DISPLAY]
         );
@@ -29,10 +29,10 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
     {
         $leadEmailEventPriorities = $this->getLeadEmailEventsPriorities();
         foreach (EmailNameToVocativeSubscriber::getSubscribedEvents() as $eventName => $reaction) {
-            $this->assertTrue(is_array($reaction));
+            self::assertTrue(is_array($reaction));
             $priority = $this->filterPriorityValue($reaction);
-            $this->assertArrayHasKey($eventName, $leadEmailEventPriorities);
-            $this->assertLessThan($leadEmailEventPriorities[$eventName], $priority);
+            self::assertArrayHasKey($eventName, $leadEmailEventPriorities);
+            self::assertLessThan($leadEmailEventPriorities[$eventName], $priority);
         }
     }
 
@@ -44,7 +44,7 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
     {
         $subscribedEvents = EmailSubscriber::getSubscribedEvents();
         $lookedForEvents = [EmailEvents::EMAIL_ON_SEND, EmailEvents::EMAIL_ON_DISPLAY];
-        $this->assertNotEmpty($lookedForEvents);
+        self::assertNotEmpty($lookedForEvents);
         $watchedEvents = array_filter(
             $subscribedEvents,
             function ($value) use ($subscribedEvents, $lookedForEvents) {
@@ -58,7 +58,7 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
             $priority = $this->filterPriorityValue($reaction);
             $priorities[$eventName] = $priority;
         }
-        $this->assertCount(count($lookedForEvents), $priorities);
+        self::assertCount(count($lookedForEvents), $priorities);
 
         return $priorities;
     }
@@ -68,7 +68,7 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
         $wrappedPriority = array_filter($reaction, function ($value) {
             return is_numeric($value);
         });
-        $this->assertTrue(is_array($wrappedPriority));
+        self::assertTrue(is_array($wrappedPriority));
 
         return current($wrappedPriority);
     }

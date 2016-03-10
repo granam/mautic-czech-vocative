@@ -14,7 +14,7 @@ class FOMVocativeIntegrationTest extends FOMTestWithMockery
     public function I_can_integrate_it_by_proper_name()
     {
         $integration = new FOMVocativeIntegration($this->createFactory());
-        $this->assertSame(
+        self::assertSame(
             $this->parseExpectedName(get_called_class()),
             $integration->getName()
         );
@@ -25,14 +25,12 @@ class FOMVocativeIntegrationTest extends FOMTestWithMockery
      */
     private function createFactory()
     {
-        $factory = $this->mockery('\Mautic\CoreBundle\Factory\MauticFactory');
-
-        return $factory;
+        return $this->mockery('\Mautic\CoreBundle\Factory\MauticFactory');
     }
 
     private function parseExpectedName($testClassName)
     {
-        $this->assertEquals(1, preg_match('~(?<name>\w+)IntegrationTest$~', $testClassName, $matches));
+        self::assertEquals(1, preg_match('~(?<name>\w+)IntegrationTest$~', $testClassName, $matches));
 
         return $matches['name'];
     }
@@ -43,7 +41,7 @@ class FOMVocativeIntegrationTest extends FOMTestWithMockery
     public function I_do_not_need_to_authenticate_to_use_it()
     {
         $integration = new FOMVocativeIntegration($this->createFactory());
-        $this->assertSame(
+        self::assertSame(
             'none',
             $integration->getAuthenticationType()
         );

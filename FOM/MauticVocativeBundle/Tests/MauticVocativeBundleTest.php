@@ -11,8 +11,8 @@ class MauticVocativeBundleTest extends \PHPUnit_Framework_TestCase
     public function I_can_boot_bundle()
     {
         $bundle = new MauticVocativeBundle();
-        $this->assertFalse(class_exists('\MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName'));
+        self::assertFalse(class_exists('\MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName'));
         $bundle->boot();
-        $this->assertTrue(class_exists('\MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName'));
+        self::assertTrue(class_exists('\MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName'));
     }
 }

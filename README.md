@@ -1,6 +1,7 @@
 # Compatibility
-**Not working with [Mautic 1.3.0](https://www.mautic.org/community/index.php/2872-mautic-1-3-0-released/0)** (working on it, 2016-03-08)
-Tested with Mautic 1.2.4
+- tested with Mautic 1.3.0  
+- tested with Mautic 1.2.4
+- unknown, but possible compatibility with lower versions.
 
 # Usage
 In your Mautic insert into an email template this shortcode around *some name*
@@ -11,6 +12,7 @@ hint: use `CTRL+SHIFT+V` to insert copied text without formatting, also check so
 ![Mautic source code icon](https://github.com/jaroslavtyc/mautic-bundle-skeleton/blob/master/mautic/app/bundles/CoreBundle/Assets/js/libraries/ckeditor/plugins/sourcedialog/icons/sourcedialog.png)
 button for unwanted formatting
 - also foreign and non-human names are converted to czech form `[Cassandra|vocative]` = `Cassandro`, `[android|vocative]` = `Androide`
+- **always tests your email before sending to real people**
 
 ### Aliases
 You can also set aliases to be used (and vocalized) instead of the name.
