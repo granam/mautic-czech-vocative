@@ -213,7 +213,7 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
 	<title></title>
 </head>
 <body>
-<p><a href="http://example.com/?[[Alois]]">XSS for free!&nbsp;</a></p><!-- wrong -->
+<p><a href="http://example.com/?%5B[[Alois]]|vocative%5D">XSS for free!&nbsp;</a></p><!-- wrong -->
 <div><a href="http://example.com/?{$replacement}">Click on me&nbsp;</a></div>
 <p>[First Name karel]</p> <!-- missing shortcode -->
 <span>{$replacement}</span><!-- correct -->

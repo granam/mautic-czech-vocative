@@ -115,7 +115,7 @@ class NameToVocativeConverter
             [
                 '(?:\[|%5B)', // opening bracket, native or URL encoded
                 '\s*', // optional leading white character(s)
-                '(?<toKeep>[^|]*[^\s|])?', // do not delete string before pipe (but trim it)
+                '(?<toKeep>[^|\]]*[^\s|\]])?', // do not delete string before pipe or closing bracket (but trim it)
                 '\s*\|\s*vocative\s*', // pipe and "vocative" keyword, optionally surrounded by white characters
                 '(?:\s*\([^)]*\))?', // optional options
                 '\s*', // optional trailing white character(s)
