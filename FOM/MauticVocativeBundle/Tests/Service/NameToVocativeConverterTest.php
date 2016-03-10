@@ -196,6 +196,14 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function I_can_vocalize_name_enclosed_by_brackets()
+    {
+        $this->checkEmailContentConversion('[Venceslav]', true /* conversion should be called */, 'Venceslav');
+    }
+
+    /**
+     * @test
+     */
     public function I_got_vocalized_content_in_complex_string()
     {
         $nameConverter = new NameToVocativeConverter($this->createSimpleCzechName($replacement = 'foo'));
@@ -205,14 +213,12 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
 	<title></title>
 </head>
 <body>
-<p><a href="http://example.com/?[Alois]">XSS for free!&nbsp;</a></p><!-- wrong -->
-
+<p><a href="http://example.com/?[[Alois]]">XSS for free!&nbsp;</a></p><!-- wrong -->
 <div><a href="http://example.com/?{$replacement}">Click on me&nbsp;</a></div>
-
-<span>[First Name]</span><!-- wrong again -->
-
+<p>[First Name karel]</p> <!-- missing shortcode -->
+<span>{$replacement}</span><!-- correct -->
 <p>{$replacement}</p>
-
+<p>{$replacement}</p>
 <p></p>
 <div></div>
 </body>
@@ -225,14 +231,12 @@ HTML
 	<title></title>
 </head>
 <body>
-<p><a href="http://example.com/?%5B[Alois]|vocative%5D">XSS for free!&nbsp;</a></p><!-- wrong -->
-
+<p><a href="http://example.com/?%5B[[Alois]]|vocative%5D">XSS for free!&nbsp;</a></p><!-- wrong -->
 <div><a href="http://example.com/?%5BKarel|vocative%5D">Click on me&nbsp;</a></div>
-
-<span>[[First Name]|vocative]</span><!-- wrong again -->
-
+<p>[First Name karel]</p> <!-- missing shortcode -->
+<span>[[First Name]|vocative]</span><!-- correct -->
+<p>[ [ First Name karel ] | vocative ]</p>
 <p>[fitnesačka|vocative(androiďačka)]</p>
-
 <p>[|vocative]</p>
 <div>[    | vocative ( Alone in the dark, Alice ) ]</div>
 </body>

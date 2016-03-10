@@ -61,8 +61,16 @@ class NameToVocativeConverter
                 '(?:\[|%5B)', // opening bracket, native or URL encoded
                 [
                     '\s*', // leading white characters are trimmed
-                    '(?<toVocative>[^\[\]]+[^\s\[\]])', // without any bracket, ending by non-bracket and non-white-character
-                    '[\s]*', // redundant closing brackets and white characters are removed
+                    '(', // follows two combinations
+                    [
+                        '[\[]\s*', // enclosed by brackets
+                        '(?<toVocative1>', $toVocativeRegexp = '[^\[\]]+[^\s\[\]]', ')', // without any bracket, ending by non-bracket and non-white-character
+                        '\s*[\]]', // enclosed by brackets
+                        '|', // or
+                        '(?<toVocative2>', $toVocativeRegexp, ')' // without enclosing brackets
+                    ],
+                    ')', // end of combinations group
+                    '\s*', // trailing white characters are trimmed
                     '\|\s*vocative\s*', // with trailing (relatively to name) pipe and keyword "vocative"
                     '(?:\(+', // options are enclosed in parenthesis
                     [
@@ -85,7 +93,9 @@ class NameToVocativeConverter
             ) > 0
         ) {
             foreach ($matches['toReplace'] as $index => $toReplace) {
-                $toVocative = $matches['toVocative'][$index];
+                $toVocative = $matches['toVocative1'][$index] !== ''
+                    ? $matches['toVocative1'][$index]
+                    : $matches['toVocative2'][$index];
                 $stringOptions = $matches['options'][$index];
                 $value = str_replace(
                     $toReplace,
