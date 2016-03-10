@@ -3,7 +3,7 @@ return [
     'name' => 'Word to vocative',
     'description' => 'Modifier to convert a name or given gender-dependent alias to its vocative form, useful for email opening salutation.',
     'author' => 'Friends of Mautic',
-    'version' => '1.1.0',
+    'version' => '1.1.1',
 
     'services' => [
         'events' => [
