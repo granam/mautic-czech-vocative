@@ -6,9 +6,9 @@ php:
   - hhvm
 
 before_script:
-  - if [[ $TRAVIS_PHP_VERSION =~ ^[0-9]+[.][0-9]+$ ]]; then phpenv config-rm xdebug.ini; fi
-  - composer self-update
+  - if [[ $TRAVIS_PHP_VERSION =~ ^[0-9]+[.][0-9]+$ ]]; then phpenv config-rm xdebug.ini; echo "memory_limit=2G" >> /home/travis/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/travis.ini; fi
 
 script:
-  - php -dmemory-limit=2G /home/travis/.phpenv/versions/$TRAVIS_PHP_VERSION/bin/composer update --no-interaction
+  - composer self-update
+  - composer update --no-interaction
   - ./vendor/phpunit/phpunit/phpunit -v
