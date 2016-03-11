@@ -16,7 +16,7 @@ class NameToVocativeOptionsTest extends \PHPUnit_Framework_TestCase
                     foreach (['', " \n\t ", "\n\n\n"] as $space2) {
                         $string = "{$space1}{$maleAlias}{$space2},{$space1}{$femaleAlias}{$space2}";
                         $options = NameToVocativeOptions::createFromString($string);
-                        self::assertInstanceOf(NameToVocativeOptions::class, $options);
+                        self::assertInstanceOf(NameToVocativeOptions::getClass(), $options);
                         self::assertSame($maleAlias !== '', $options->hasMaleAlias());
                         self::assertSame($maleAlias ?: null, $options->getMaleAlias());
                         self::assertSame($femaleAlias !== '', $options->hasFemaleAlias());

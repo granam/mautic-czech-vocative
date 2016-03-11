@@ -35,6 +35,11 @@ class NameToVocativeOptions
         return new static($options);
     }
 
+    public static function getClass()
+    {
+        return get_called_class();
+    }
+
     public function __construct(array $values)
     {
         foreach ($values as $name => $value) {
