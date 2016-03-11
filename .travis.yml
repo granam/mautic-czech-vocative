@@ -10,5 +10,5 @@ before_script:
   - composer self-update
 
 script:
-  - php -d /home/travis/.phpenv/versions/$TRAVIS_PHP_VERSION/bin/composer update --no-interaction
+  - php -dmemory-limit=2G /home/travis/.phpenv/versions/$TRAVIS_PHP_VERSION/bin/composer update --no-interaction
   - ./vendor/phpunit/phpunit/phpunit -v
