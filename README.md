@@ -1,15 +1,10 @@
-# Compatibility
-- tested with Mautic 1.3.0  
-- tested with Mautic 1.2.4
-- unknown, but possible compatibility with lower versions.
-
 # Usage
 In your Mautic insert into an email template this shortcode around *some name*
 `[some name|vocative]`
 - for example `[Karel|vocative]`
 - or better example `[{leadfield=firstname}|vocative]`  
 hint: use `CTRL+SHIFT+V` to insert copied text without formatting, also check source code of your email template by
-![Mautic source code icon](https://github.com/jaroslavtyc/mautic-bundle-skeleton/blob/master/mautic/app/bundles/CoreBundle/Assets/js/libraries/ckeditor/plugins/sourcedialog/icons/sourcedialog.png)
+![Mautic source code icon](https://raw.githubusercontent.com/mautic/mautic/staging/app/bundles/CoreBundle/Assets/js/libraries/ckeditor/plugins/sourcedialog/icons/sourcedialog.png)
 button for unwanted formatting
 - also foreign and non-human names are converted to czech form `[Cassandra|vocative]` = `Cassandro`, `[android|vocative]` = `Androide`
 - **always tests your email before sending to real people**
@@ -32,6 +27,11 @@ You can also set aliases to be used (and vocalized) instead of the name.
 4. Click *Install/Upgrade Plugins*
  - if everything goes well, you got new plugin *FOMVocative*.
 
+## Compatibility
+- tested with Mautic 1.3.0  
+- tested with Mautic 1.2.4
+- unknown, but possible compatibility with lower versions.
+
 ## Troubleshooting
  If any error happens, first of all, have you **cleared the cache**?
  
@@ -43,3 +43,4 @@ You can also set aliases to be used (and vocalized) instead of the name.
 # Credits
 The plugin has been created thanks to sponsor [svetandroida.cz](https://www.svetandroida.cz/)
 and thanks to the author of free czech vocative library [`bigit/vokativ`](https://bitbucket.org/bigit/vokativ.git) Petr Joachim.
+
