@@ -48,9 +48,9 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
         $watchedEvents = array_filter(
             $subscribedEvents,
             function ($value) use ($subscribedEvents, $lookedForEvents) {
-                $eventName = array_search($value, $subscribedEvents);
+                $eventName = array_search($value, $subscribedEvents, true);
 
-                return in_array($eventName, $lookedForEvents);
+                return in_array($eventName, $lookedForEvents, true);
             }
         );
         $priorities = [];
@@ -82,6 +82,7 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
         $subscriber = new EmailNameToVocativeSubscriber($mauticFactory);
         $emailSendEvent = $this->createEmailSentEvent($toVocalize, $vocalized);
         $subscriber->onEmailGenerate($emailSendEvent);
+        self::assertTrue(true);
     }
 
     /**
@@ -97,6 +98,12 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
             ->once()
             ->andReturn($toVocalize);
         $emailSendEvent->shouldReceive('setContent')
+            ->once()
+            ->with($vocalized);
+        $emailSendEvent->shouldReceive('getSubject')
+            ->once()
+            ->andReturn($toVocalize);
+        $emailSendEvent->shouldReceive('setSubject')
             ->once()
             ->with($vocalized);
 

@@ -23,9 +23,13 @@ class EmailNameToVocativeSubscriber extends CommonSubscriber
     public function onEmailGenerate(EmailSendEvent $event)
     {
         // to array and to string solves "sometimes string, sometimes array" event return value
-        $toVocalize = implode((array)$event->getContent(true /* with tokens replaced (to get names) */));
-        $vocalized = $this->getConverter()->findAndReplace($toVocalize);
-        $event->setContent($vocalized);
+        $bodyToVocalize = implode((array)$event->getContent(true /* with tokens replaced (to get names) */));
+        $vocalizedBody = $this->getConverter()->findAndReplace($bodyToVocalize);
+        $event->setContent($vocalizedBody);
+
+        $subjectToVocalize = $event->getSubject();
+        $vocalizedSubject = $this->getConverter()->findAndReplace($subjectToVocalize);
+        $event->setSubject($vocalizedSubject);
     }
 
     /**

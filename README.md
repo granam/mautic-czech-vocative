@@ -7,6 +7,7 @@ hint: use `CTRL+SHIFT+V` to insert copied text without formatting, also check so
 ![Mautic source code icon](https://raw.githubusercontent.com/mautic/mautic/staging/app/bundles/CoreBundle/Assets/js/libraries/ckeditor/plugins/sourcedialog/icons/sourcedialog.png)
 button for unwanted formatting
 - also foreign and non-human names are converted to czech form `[Cassandra|vocative]` = `Cassandro`, `[android|vocative]` = `Androide`
+- you can use it even in Subject of your email (unlike other shortcodes).
 - **always tests your email before sending to real people**
 
 ### Aliases
