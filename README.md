@@ -24,12 +24,16 @@ You can also set aliases to be used (and vocalized) instead of the name.
 1. Manually copy the `MauticVocativeBundle` directory into your Mautic `plugins` directory.
  - for example `/var/www/mautic/plugins/MauticVocativeBundle`.
 2. Clear Mautic cache by `./app/console cache:clear` or just delete the `app/cache` dir.
+ - note: In some cases, not yet fully understood, the cache is not rebuilt fully automatically.
+ In case of fatal error because of expected but missing file in the cache, rebuilt it manually:
+    - `./app/console cache:warmup --no-optional-warmers`
 3. Log in to your Mautic as an admin, open cogwheel menu in the right top corner and choose *Plugins*
 4. Click *Install/Upgrade Plugins*
  - if everything goes well, you got new plugin *FOMVocative*.
 
 ## Compatibility
-- tested with Mautic 1.3.0  
+- tested with Mautic 1.3.1
+- tested with Mautic 1.3.0
 - tested with Mautic 1.2.4
 - unknown, but possible compatibility with lower versions.
 
