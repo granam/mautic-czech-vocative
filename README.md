@@ -12,12 +12,15 @@ button for unwanted formatting
 
 ### Aliases
 You can also set aliases to be used (and vocalized) instead of the name.
-- `[{leadfield=firstname}|vocative(sirius,andromeda)]` leading into
+- `[{leadfield=firstname}|vocative(sirius,andromeda,fill your name plase!)]` leading into
     - if `firstname` is male, let's say Roman, the result is `Siriusi`
     - if `firstname` is female, for example Gloria, the result is `Andromedo`
+    - if `firstname` is empty, or from white characters only respectively, the result is `Fill your name please!`
 - if you omit one of gender-dependent alias, the original name is used
     - `[richard|vocative(,For gentlemen only!)]` = `Richarde`
-    - `[monika|vocative(,For gentlemen only!)]` = `For gentlemen only!` (because of trailing non-character the string is left untouched)
+    - `[monika|vocative(,For gentlemen only!)]` = `For gentlemen only!` (because of the trailing non-character the string is untouched)
+    - `[  |vocative(Karel,Monika)]` = ``
+    - `[  |vocative(Karel,Monika,Batman)]` = `Batmane`
 
 # Install
 
