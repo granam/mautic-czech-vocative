@@ -22,17 +22,17 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param $expectedName
-     * @param $inVocative
+     * @param $asVocative
      * @param bool $isMale
      * @return CzechName
      */
-    private function createCzechName($expectedName, $inVocative, $isMale = true)
+    private function createCzechName($expectedName, $asVocative, $isMale = true)
     {
         $czechName = $this->mockery('\MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName');
-        if ($inVocative !== false) {
+        if ($asVocative !== false) {
             $czechName->shouldReceive('vocative')
                 ->with(html_entity_decode($expectedName))
-                ->andReturn($inVocative);
+                ->andReturn($asVocative);
             $czechName->shouldReceive('isMale')
                 ->andReturn($isMale);
         } else {
@@ -61,26 +61,50 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
      * @param bool $conversionShouldHappen
      * @param string $nameOrMaleAlias
      * @param string $femaleAlias
-     * @param string $gender
+     * @param string $genderOrEmpty
+     * @param string $emptyNameAlias
      */
     private function checkEmailContentConversion(
         $toConvert,
         $conversionShouldHappen,
         $nameOrMaleAlias = '',
         $femaleAlias = '',
-        $gender = ''
+        $genderOrEmpty = '',
+        $emptyNameAlias = ''
     )
     {
+        $expectedName = $nameOrMaleAlias;
+        if ($genderOrEmpty === 'female') {
+            $expectedName = $femaleAlias;
+        } else if ($genderOrEmpty === 'empty') {
+            $expectedName = $emptyNameAlias;
+        }
+        $nameConverter = new NameToVocativeConverter(
+            $this->createCzechName(
+                $expectedName,
+                $conversionShouldHappen
+                    ? 'Příliš žluťkoučký kůň úpěl ďábelské ódy'
+                    : ''
+                ,
+                in_array($genderOrEmpty, ['', 'male'], true)
+            )
+        );
+
         $spaces = ['', "\n\t ", " \t\n\t "]; // to test white space combinations
         foreach ($spaces as $space1) {
             foreach ($spaces as $space2) {
-                if (in_array($gender, ['male', 'female'])) {
-                    $optionsCombination = ["{$space1}({$space2}{$nameOrMaleAlias}{$space1},{$space2}{$femaleAlias}{$space1}){$space2}",];
-                    if ($gender === 'male') {
+                $optionsCombination = [];
+                if (in_array($genderOrEmpty, ['male', 'female', 'empty'], true)) {
+                    $optionsCombination[] = "{$space1}({$space2}{$nameOrMaleAlias}{$space1},{$space2}{$femaleAlias}{$space1},{$space2}{$emptyNameAlias}{$space1}){$space2}";
+                    if (in_array($genderOrEmpty, ['male', 'female'], true)) {
+                        $optionsCombination[] = "{$space1}({$space2}{$nameOrMaleAlias}{$space1},{$space2}{$femaleAlias}{$space1}){$space2}"; // without empty name alias at all
+                    }
+                    if ($genderOrEmpty === 'male') {
                         $optionsCombination[] = "{$space1}({$space2}{$nameOrMaleAlias}{$space1}){$space2}"; // without female alias at all
                     }
                 } else {
-                    $optionsCombination = ["({$space1}{$space2})", ''];// with and without parenthesis
+                    $optionsCombination[] = "({$space1}{$space2})";
+                    $optionsCombination[] = '';
                 }
                 foreach ($optionsCombination as $options) {
                     foreach (range(1, 3) as $openingBracketCount) {
@@ -91,16 +115,6 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
                             $wrappedByShortCode .= "|vocative{$space2}{$options}{$space1}"; // modifier with optional options
                             $wrappedByShortCode .= str_repeat(']', $closingBracketCount); // 1+ closing bracket
                             $wrappedByShortCode .= "{$space2}bar"; // trailing junk
-                            $nameConverter = new NameToVocativeConverter(
-                                $this->createCzechName(
-                                    $gender !== 'female' ? $nameOrMaleAlias : $femaleAlias,
-                                    ($conversionShouldHappen
-                                        ? 'Příliš žluťkoučký kůň úpěl ďábelské ódy'
-                                        : false
-                                    ),
-                                    $gender !== 'female'
-                                )
-                            );
                             $vocalizedString = '';
                             if ($conversionShouldHappen) {
                                 $vocalizedString = 'Příliš žluťkoučký kůň úpěl ďábelské ódy';
@@ -133,9 +147,32 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function I_do_not_trigger_conversion_by_empty_value()
+    public function I_got_names_converted_even_it_is_single_character()
     {
-        $this->checkEmailContentConversion('', false /* conversion should not be called */);
+        $this->checkEmailContentConversion('a', true /* conversion should be called */, 'a');
+    }
+
+    /**
+     * @test
+     */
+    public function I_do_not_trigger_conversion_by_empty_value_without_empty_string_alias()
+    {
+        $this->checkEmailContentConversion('', false /* conversion should not be called */, '');
+    }
+
+    /**
+     * @test
+     */
+    public function I_get_vocalized_alias_for_empty_value_if_given()
+    {
+        $this->checkEmailContentConversion(
+            "\r\n \t \n",
+            true /* conversion should be called */,
+            'I am boy',
+            'I am girl',
+            'empty',
+            'I am Ms. No one'
+        );
     }
 
     /**

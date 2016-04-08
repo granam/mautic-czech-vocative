@@ -25,12 +25,20 @@ class NameToVocativeConverter
     public function toVocative($name, NameToVocativeOptions $options = null)
     {
         if ($options !== null) {
-            if ($options->hasMaleAlias() && $this->name->isMale($name)) {
+            if ($name === '') {
+                if ($options->hasEmptyNameAlias()) {
+                    $name = $options->getEmptyNameAlias();
+                }
+            } else if ($options->hasMaleAlias() && $this->name->isMale($name)) {
                 $name = $options->getMaleAlias();
             } else if ($options->hasFemaleAlias() && !$this->name->isMale($name)) {
                 $name = $options->getFemaleAlias();
             }
         }
+        if ($name === '') {
+            return '';
+        }
+
         $decodedName = html_entity_decode($name);
         if ($decodedName === $name) {
             return $this->name->vocative($name);
@@ -53,6 +61,12 @@ class NameToVocativeConverter
         return $value;
     }
 
+    /**
+     * Used regexp is split to parts only because of logical grouping to easier read.
+     *
+     * @param string $value
+     * @return string
+     */
     private function vocalizeByShortCodes($value)
     {
         $regexpParts = [
@@ -61,13 +75,17 @@ class NameToVocativeConverter
                 '(?:\[|%5B)', // opening bracket, native or URL encoded
                 [
                     '\s*', // leading white characters are trimmed
-                    '(', // follows two combinations
+                    '(', // follows two possible enclosing formats
                     [
-                        '[\[]\s*', // enclosed by brackets
-                        '(?<toVocative1>', $toVocativeRegexp = '[^\[\]]+[^\s\[\]]', ')', // without any bracket, ending by non-bracket and non-white-character
-                        '\s*[\]]', // enclosed by brackets
+                        [ // first
+                            '[\[]\s*', // enclosed by brackets
+                            '(?<toVocative1>', $toVocativeRegexp = '(?:[^\[\]]*[^\s\[\]]|)', ')', // without any bracket, ending by non-bracket and non-white-character, or emptiness
+                            '\s*[\]]', // enclosed by brackets
+                        ],
                         '|', // or
-                        '(?<toVocative2>', $toVocativeRegexp, ')' // without enclosing brackets
+                        [ // second
+                            '(?<toVocative2>', $toVocativeRegexp, ')' // without enclosing brackets
+                        ]
                     ],
                     ')', // end of combinations group
                     '\s*', // trailing white characters are trimmed
@@ -86,16 +104,14 @@ class NameToVocativeConverter
             ')'
         ];
         $regexp = '~' . RecursiveImplode::implode($regexpParts) . '~u'; // u = UTF-8
-        if (preg_match_all(
-                $regexp,
-                $value,
-                $matches
-            ) > 0
-        ) {
+        if (preg_match_all($regexp, $value, $matches) > 0) {
             foreach ($matches['toReplace'] as $index => $toReplace) {
-                $toVocative = $matches['toVocative1'][$index] !== ''
-                    ? $matches['toVocative1'][$index]
-                    : $matches['toVocative2'][$index];
+                $toVocative = '';
+                if ($matches['toVocative1'][$index] !== '') {
+                    $toVocative = $matches['toVocative1'][$index];
+                } else if ($matches['toVocative2'][$index] !== '') {
+                    $toVocative = $matches['toVocative2'][$index];
+                }
                 $stringOptions = $matches['options'][$index];
                 $value = str_replace(
                     $toReplace,
