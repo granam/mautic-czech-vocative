@@ -11,6 +11,10 @@ class NameToVocativeOptions
      * @var string|null
      */
     private $femaleAlias;
+    /**
+     * @var string|null
+     */
+    private $emptyNameAlias;
 
     public static function createFromString($stringOptions)
     {
@@ -18,16 +22,22 @@ class NameToVocativeOptions
         $stringOptions = trim($stringOptions);
         if ($stringOptions !== '') {
             $values = explode(',', $stringOptions);
-            if (isset($values[0])) {
-                $value = trim($values[0]);
-                if ($value !== '') {
-                    $options['maleAlias'] = $value;
+            if (array_key_exists(0, $values)) {
+                $firstOption = trim($values[0]);
+                if ($firstOption !== '') {
+                    $options['maleAlias'] = $firstOption;
                 }
             }
-            if (isset($values[1])) {
-                $value = trim($values[1]);
-                if ($value !== '') {
-                    $options['femaleAlias'] = $value;
+            if (array_key_exists(1, $values)) {
+                $secondOption = trim($values[1]);
+                if ($secondOption !== '') {
+                    $options['femaleAlias'] = $secondOption;
+                }
+            }
+            if (array_key_exists(2, $values)) {
+                $thirdOption = trim($values[2]);
+                if ($thirdOption !== '') {
+                    $options['emptyNameAlias'] = $thirdOption;
                 }
             }
         }
@@ -43,10 +53,19 @@ class NameToVocativeOptions
     public function __construct(array $values)
     {
         foreach ($values as $name => $value) {
-            if (!property_exists($this, $name)) {
-                throw new Exceptions\UnknownOption('Got unknown option of name ' . var_export($name, true));
+            switch ($name) {
+                case 'maleAlias' :
+                    $this->maleAlias = $value;
+                    break;
+                case 'femaleAlias' :
+                    $this->femaleAlias = $value;
+                    break;
+                case 'emptyNameAlias' :
+                    $this->emptyNameAlias = $value;
+                    break;
+                default :
+                    throw new Exceptions\UnknownOption('Got unknown option of name ' . var_export($name, true));
             }
-            $this->$name = $value;
         }
     }
 
@@ -55,7 +74,7 @@ class NameToVocativeOptions
      */
     public function hasMaleAlias()
     {
-        return isset($this->maleAlias);
+        return $this->maleAlias !== null;
     }
 
     /**
@@ -71,7 +90,7 @@ class NameToVocativeOptions
      */
     public function hasFemaleAlias()
     {
-        return isset($this->femaleAlias);
+        return $this->femaleAlias !== null;
     }
 
     /**
@@ -80,6 +99,22 @@ class NameToVocativeOptions
     public function getFemaleAlias()
     {
         return $this->femaleAlias;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasEmptyNameAlias()
+    {
+        return $this->emptyNameAlias !== null;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getEmptyNameAlias()
+    {
+        return $this->emptyNameAlias;
     }
 
 }
