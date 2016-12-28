@@ -4,7 +4,7 @@ In your Mautic insert into an email template this shortcode around *some name*
 - for example `[Karel|vocative]`
 - or better example `[{leadfield=firstname}|vocative]`  
 hint: use `CTRL+SHIFT+V` to insert copied text without formatting, also check source code of your email template by
-![Mautic source code icon](https://raw.githubusercontent.com/mautic/mautic/staging/app/bundles/CoreBundle/Assets/js/libraries/ckeditor/plugins/sourcedialog/icons/sourcedialog.png)
+![Mautic source code icon](https://raw.githubusercontent.com/mautic/mautic/1.3.1/app/bundles/CoreBundle/Assets/js/libraries/ckeditor/plugins/sourcedialog/icons/sourcedialog.png)
 button for unwanted formatting
 - also foreign and non-human names are converted to czech form `[Cassandra|vocative]` = `Cassandro`, `[android|vocative]` = `Androide`
 - you can use it even in Subject of your email (unlike other shortcodes).
