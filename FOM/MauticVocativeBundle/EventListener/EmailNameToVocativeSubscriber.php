@@ -16,20 +16,22 @@ class EmailNameToVocativeSubscriber extends CommonSubscriber
     {
         return [
             EmailEvents::EMAIL_ON_SEND => ['onEmailGenerate', -999 /* lowest priority */],
-            EmailEvents::EMAIL_ON_DISPLAY => ['onEmailGenerate', -999 /* lowest priority */],
+            EmailEvents::EMAIL_ON_DISPLAY => ['onEmailGenerate', -999  /* lowest priority */],
         ];
     }
 
     public function onEmailGenerate(EmailSendEvent $event)
     {
-        // to array and to string solves "sometimes string, sometimes array" event return value
-        $bodyToVocalize = implode((array)$event->getContent(true /* with tokens replaced (to get names) */));
-        $vocalizedBody = $this->getConverter()->findAndReplace($bodyToVocalize);
-        $event->setContent($vocalizedBody);
+        // Combine all possible content to find tokens across them
+        $content = $event->getSubject();
+        $content .= $event->getContent(true);
+        $content .= $event->getPlainText();
+        $tokenList = $this->getConverter()->findAndReplace($content);
+        if (count($tokenList)) {
+            $event->addTokens($tokenList);
+            unset($tokenList);
+        }
 
-        $subjectToVocalize = $event->getSubject();
-        $vocalizedSubject = $this->getConverter()->findAndReplace($subjectToVocalize);
-        $event->setSubject($vocalizedSubject);
     }
 
     /**
