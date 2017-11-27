@@ -3,14 +3,11 @@ namespace MauticPlugin\MauticVocativeBundle\Tests\Service;
 
 use MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName;
 use MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter;
+use MauticPlugin\MauticVocativeBundle\Tests\FOMTestWithMockery;
+use Mockery\MockInterface;
 
-class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
+class NameToVocativeConverterTest extends FOMTestWithMockery
 {
-    protected function tearDown()
-    {
-        \Mockery::close();
-    }
-
     /**
      * @test
      */
@@ -22,17 +19,18 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param $expectedName
-     * @param $asVocative
+     * @param $vocative
      * @param bool $isMale
-     * @return CzechName
+     * @return CzechName|MockInterface
      */
-    private function createCzechName($expectedName, $asVocative, $isMale = true)
+    private function createCzechName(string $expectedName, string $vocative, bool $isMale = true): CzechName
     {
-        $czechName = $this->mockery('\MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName');
-        if ($asVocative !== false) {
+        $czechName = $this->mockery(CzechName::class);
+        if ($vocative !== '') {
             $czechName->shouldReceive('vocative')
+                ->atLeast()->once()
                 ->with(html_entity_decode($expectedName))
-                ->andReturn($asVocative);
+                ->andReturn($vocative);
             $czechName->shouldReceive('isMale')
                 ->andReturn($isMale);
         } else {
@@ -41,11 +39,6 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
         }
 
         return $czechName;
-    }
-
-    private function mockery($className)
-    {
-        return \Mockery::mock($className);
     }
 
     /**
@@ -86,7 +79,7 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
                     ? 'Příliš žluťkoučký kůň úpěl ďábelské ódy'
                     : ''
                 ,
-                in_array($genderOrEmpty, ['', 'male'], true)
+                \in_array($genderOrEmpty, ['', 'male'], true)
             )
         );
 
@@ -94,9 +87,9 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
         foreach ($spaces as $space1) {
             foreach ($spaces as $space2) {
                 $optionsCombination = [];
-                if (in_array($genderOrEmpty, ['male', 'female', 'empty'], true)) {
+                if (\in_array($genderOrEmpty, ['male', 'female', 'empty'], true)) {
                     $optionsCombination[] = "{$space1}({$space2}{$nameOrMaleAlias}{$space1},{$space2}{$femaleAlias}{$space1},{$space2}{$emptyNameAlias}{$space1}){$space2}";
-                    if (in_array($genderOrEmpty, ['male', 'female'], true)) {
+                    if (\in_array($genderOrEmpty, ['male', 'female'], true)) {
                         $optionsCombination[] = "{$space1}({$space2}{$nameOrMaleAlias}{$space1},{$space2}{$femaleAlias}{$space1}){$space2}"; // without empty name alias at all
                     }
                     if ($genderOrEmpty === 'male') {
@@ -107,13 +100,13 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
                     $optionsCombination[] = '';
                 }
                 foreach ($optionsCombination as $options) {
-                    foreach (range(1, 3) as $openingBracketCount) {
-                        foreach (range(1, 3) as $closingBracketCount) {
+                    foreach (\range(1, 3) as $openingBracketCount) {
+                        foreach (\range(1, 3) as $closingBracketCount) {
                             $wrappedByShortCode = "foo{$space1}"; // leading junk
-                            $wrappedByShortCode .= str_repeat('[', $openingBracketCount); // 1+ opening bracket
+                            $wrappedByShortCode .= \str_repeat('[', $openingBracketCount); // 1+ opening bracket
                             $wrappedByShortCode .= "{$space2}{$toConvert}{$space1}"; // name to vocative itself
                             $wrappedByShortCode .= "|vocative{$space2}{$options}{$space1}"; // modifier with optional options
-                            $wrappedByShortCode .= str_repeat(']', $closingBracketCount); // 1+ closing bracket
+                            $wrappedByShortCode .= \str_repeat(']', $closingBracketCount); // 1+ closing bracket
                             $wrappedByShortCode .= "{$space2}bar"; // trailing junk
                             $vocalizedString = '';
                             if ($conversionShouldHappen) {
@@ -123,9 +116,9 @@ class NameToVocativeConverterTest extends \PHPUnit_Framework_TestCase
                                 }
                             }
                             self::assertSame(
-                                'foo' . $space1 . str_repeat('[', $openingBracketCount - 1)
+                                'foo' . $space1 . \str_repeat('[', $openingBracketCount - 1)
                                 . $vocalizedString
-                                . str_repeat(']', $closingBracketCount - 1) . $space2 . 'bar',
+                                . \str_repeat(']', $closingBracketCount - 1) . $space2 . 'bar',
                                 $nameConverter->findAndReplace($wrappedByShortCode)
                             );
                         }
@@ -287,10 +280,10 @@ HTML
      * @param string $toVocative
      * @return CzechName|\Mockery\MockInterface
      */
-    private function createSimpleCzechName($toVocative = 'foo')
+    private function createSimpleCzechName(string $toVocative = 'foo')
     {
         /** @var CzechName|\Mockery\MockInterface $czechName */
-        $czechName = $this->mockery('\MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName');
+        $czechName = $this->mockery(CzechName::class);
         $czechName->shouldReceive('isMale')
             ->andReturn(true);
         $czechName->shouldReceive('vocative')

@@ -1,9 +1,11 @@
 <?php
 namespace MauticPlugin\MauticVocativeBundle\Tests;
 
+use MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName;
 use MauticPlugin\MauticVocativeBundle\MauticVocativeBundle;
+use PHPUnit\Framework\TestCase;
 
-class MauticVocativeBundleTest extends \PHPUnit_Framework_TestCase
+class MauticVocativeBundleTest extends TestCase
 {
     /**
      * @test
@@ -11,8 +13,8 @@ class MauticVocativeBundleTest extends \PHPUnit_Framework_TestCase
     public function I_can_boot_bundle()
     {
         $bundle = new MauticVocativeBundle();
-        self::assertFalse(class_exists('\MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName'));
+        self::assertFalse(class_exists(CzechName::class));
         $bundle->boot();
-        self::assertTrue(class_exists('\MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName'));
+        self::assertTrue(class_exists(CzechName::class));
     }
 }

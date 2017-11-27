@@ -2,8 +2,9 @@
 namespace MauticPlugin\MauticVocativeBundle\Tests\Service\Helpers;
 
 use MauticPlugin\MauticVocativeBundle\Service\Helpers\NameToVocativeOptions;
+use PHPUnit\Framework\TestCase;
 
-class NameToVocativeOptionsTest extends \PHPUnit_Framework_TestCase
+class NameToVocativeOptionsTest extends TestCase
 {
     /**
      * @test

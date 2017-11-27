@@ -1,7 +1,9 @@
 <?php
 namespace MauticPlugin\MauticVocativeBundle\Tests\Config;
 
-class ConfigTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ConfigTest extends TestCase
 {
     /**
      * @test
@@ -10,7 +12,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         self::assertFileExists($file = __DIR__ . '/../../Config/config.php');
         $config = include __DIR__ . '/../../Config/config.php';
-        self::assertTrue(is_array($config));
+        self::assertTrue(\is_array($config));
         $this->checkClassesExistence($config);
     }
 
@@ -18,11 +20,11 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         foreach ($config as $key => $value) {
             if ($key === 'class') {
-                self::assertTrue(class_exists($value));
+                self::assertTrue(\class_exists($value), "Can not find class {$value}");
             } else if ($key === 'factory') {
-                self::assertTrue(class_exists($value[0]));
-                self::assertTrue(is_callable($value[0] . '::' . $value[1]));
-            } else if (is_array($value)) {
+                self::assertTrue(\class_exists($value[0], "Can not find class {$value[0]}"));
+                self::assertTrue(\is_callable($value[0] . '::' . $value[1]), "Can not call {$value[0]} . '::' . {$value[1]}");
+            } else if (\is_array($value)) {
                 $this->checkClassesExistence($value);
             }
         }

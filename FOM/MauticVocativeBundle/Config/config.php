@@ -8,17 +8,17 @@ return [
     'services' => [
         'events' => [
             'plugin.vocative.emailNameToVocative.subscriber' => [
-                'class' => 'MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber'
+                'class' => \MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber::class
             ]
         ],
         'other' => [
             'plugin.vocative.name_converter' => [
-                'class' => 'MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter',
+                'class' => \MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter::class,
                 'arguments' => ['plugin.vocative.czech_name']
             ],
             'plugin.vocative.czech_name' => [
-                'class' => 'CzechVocative\CzechName',
-                'factory' => ['MauticPlugin\MauticVocativeBundle\Service\NameFactory', 'createCzechName']
+                'class' => \Granam\CzechVocative\CzechName::class,
+                'factory' => [\MauticPlugin\MauticVocativeBundle\Service\NameFactory::class, 'createCzechName']
             ]
         ]
     ],

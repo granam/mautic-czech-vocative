@@ -1,14 +1,17 @@
 <?php
 namespace MauticPlugin\MauticVocativeBundle\Tests;
 
-class FOMTestWithMockery extends \PHPUnit_Framework_TestCase
+use Mockery\MockInterface;
+use PHPUnit\Framework\TestCase;
+
+class FOMTestWithMockery extends TestCase
 {
     protected function tearDown()
     {
         \Mockery::close();
     }
 
-    protected function mockery($className)
+    protected function mockery($className): MockInterface
     {
         return \Mockery::mock($className);
     }
