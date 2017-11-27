@@ -9,7 +9,10 @@ return [
         'events' => [
             'plugin.vocative.emailNameToVocative.subscriber' => [
                 'class' => \MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber::class
-            ]
+            ],
+            'plugin.vocative.dynamic.content.subscriber' => [
+                'class' => \MauticPlugin\MauticVocativeBundle\EventListener\DynamicContentSubscriber::class,
+            ],
         ],
         'other' => [
             'plugin.vocative.name_converter' => [
