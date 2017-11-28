@@ -20,6 +20,7 @@ class MauticVocativeBundle extends PluginBundleBase
      * For usage @see scripts -> pre-autoload-dump section in composer.json
      * @throws \LogicException
      * @throws \Symfony\Component\Filesystem\Exception\IOException
+     * @codeCoverageIgnore
      */
     public static function includeLibraryToBundle()
     {
