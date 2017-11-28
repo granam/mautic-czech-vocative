@@ -16,26 +16,26 @@ class NameToVocativeOptions
      */
     private $emptyNameAlias;
 
-    public static function createFromString($stringOptions)
+    public static function createFromString(string $stringOptions): NameToVocativeOptions
     {
         $options = [];
-        $stringOptions = trim($stringOptions);
+        $stringOptions = \trim($stringOptions);
         if ($stringOptions !== '') {
-            $values = explode(',', $stringOptions);
-            if (array_key_exists(0, $values)) {
-                $firstOption = trim($values[0]);
+            $values = \explode(',', $stringOptions);
+            if (\array_key_exists(0, $values)) {
+                $firstOption = \trim($values[0]);
                 if ($firstOption !== '') {
                     $options['maleAlias'] = $firstOption;
                 }
             }
-            if (array_key_exists(1, $values)) {
-                $secondOption = trim($values[1]);
+            if (\array_key_exists(1, $values)) {
+                $secondOption = \trim($values[1]);
                 if ($secondOption !== '') {
                     $options['femaleAlias'] = $secondOption;
                 }
             }
-            if (array_key_exists(2, $values)) {
-                $thirdOption = trim($values[2]);
+            if (\array_key_exists(2, $values)) {
+                $thirdOption = \trim($values[2]);
                 if ($thirdOption !== '') {
                     $options['emptyNameAlias'] = $thirdOption;
                 }
@@ -45,11 +45,10 @@ class NameToVocativeOptions
         return new static($options);
     }
 
-    public static function getClass()
-    {
-        return get_called_class();
-    }
-
+    /**
+     * @param array $values
+     * @throws \MauticPlugin\MauticVocativeBundle\Service\Helpers\Exceptions\UnknownOption
+     */
     public function __construct(array $values)
     {
         foreach ($values as $name => $value) {
@@ -72,7 +71,7 @@ class NameToVocativeOptions
     /**
      * @return bool
      */
-    public function hasMaleAlias()
+    public function hasMaleAlias(): bool
     {
         return $this->maleAlias !== null;
     }
@@ -88,7 +87,7 @@ class NameToVocativeOptions
     /**
      * @return bool
      */
-    public function hasFemaleAlias()
+    public function hasFemaleAlias(): bool
     {
         return $this->femaleAlias !== null;
     }
@@ -104,7 +103,7 @@ class NameToVocativeOptions
     /**
      * @return bool
      */
-    public function hasEmptyNameAlias()
+    public function hasEmptyNameAlias(): bool
     {
         return $this->emptyNameAlias !== null;
     }
