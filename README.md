@@ -52,3 +52,5 @@ You can also set aliases to be used (and vocalized) instead of the name.
 The plugin has been created thanks to sponsor [svetandroida.cz](https://www.svetandroida.cz/)
 and thanks to the author of free czech vocative library [`bigit/vokativ`](https://bitbucket.org/bigit/vokativ.git) Petr Joachim.
 
+# Hint for mautic Twig plugin
+If you are going to create a Mautic plugin for [Twig](https://twig.symfony.com/doc/2.x/), a good start can be [mautic-twig-plugin-skeleton](https://github.com/dongilbert/mautic-twig-plugin-skeleton).
