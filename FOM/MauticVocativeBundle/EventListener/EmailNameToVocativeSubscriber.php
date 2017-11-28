@@ -12,7 +12,7 @@ class EmailNameToVocativeSubscriber extends CommonSubscriber
     /**
      * @return array
      */
-    static public function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             EmailEvents::EMAIL_ON_SEND => ['onEmailGenerate', -999 /* lowest priority */],
@@ -20,22 +20,25 @@ class EmailNameToVocativeSubscriber extends CommonSubscriber
         ];
     }
 
-    public function onEmailGenerate(EmailSendEvent $event)
+    /**
+     * @param EmailSendEvent $event
+     */
+    public function onEmailGenerate(EmailSendEvent $event): void
     {
-        // to array and to string solves "sometimes string, sometimes array" event return value
-        $bodyToVocalize = implode((array)$event->getContent(true /* with tokens replaced (to get names) */));
-        $vocalizedBody = $this->getConverter()->findAndReplace($bodyToVocalize);
-        $event->setContent($vocalizedBody);
-
-        $subjectToVocalize = $event->getSubject();
-        $vocalizedSubject = $this->getConverter()->findAndReplace($subjectToVocalize);
-        $event->setSubject($vocalizedSubject);
+        $content = $event->getSubject()
+            . $event->getContent(true /* with tokens replaced (to get names) */)
+            . $event->getPlainText();
+        $tokenList = $this->getConverter()->findAndReplace($content);
+        if (\count($tokenList) > 0) {
+            $event->addTokens($tokenList);
+            unset($tokenList);
+        }
     }
 
     /**
-     * @return NameToVocativeConverter
+     * @return NameToVocativeConverter|object
      */
-    private function getConverter()
+    private function getConverter(): NameToVocativeConverter
     {
         return $this->factory->getKernel()->getContainer()->get('plugin.vocative.name_converter');
     }

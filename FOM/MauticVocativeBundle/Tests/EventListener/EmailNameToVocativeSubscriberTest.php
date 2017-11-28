@@ -6,6 +6,7 @@ use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\EmailSendEvent;
 use Mautic\LeadBundle\EventListener\EmailSubscriber;
 use MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber;
+use MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter;
 use MauticPlugin\MauticVocativeBundle\Tests\FOMTestWithMockery;
 
 class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
@@ -29,7 +30,7 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
     {
         $leadEmailEventPriorities = $this->getLeadEmailEventsPriorities();
         foreach (EmailNameToVocativeSubscriber::getSubscribedEvents() as $eventName => $reaction) {
-            self::assertTrue(is_array($reaction));
+            self::assertTrue(\is_array($reaction));
             $priority = $this->filterPriorityValue($reaction);
             self::assertArrayHasKey($eventName, $leadEmailEventPriorities);
             self::assertLessThan($leadEmailEventPriorities[$eventName], $priority);
@@ -40,17 +41,17 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
      * By event name indexed priorities
      * @return array|int[]
      */
-    private function getLeadEmailEventsPriorities()
+    private function getLeadEmailEventsPriorities(): array
     {
         $subscribedEvents = EmailSubscriber::getSubscribedEvents();
         $lookedForEvents = [EmailEvents::EMAIL_ON_SEND, EmailEvents::EMAIL_ON_DISPLAY];
         self::assertNotEmpty($lookedForEvents);
-        $watchedEvents = array_filter(
+        $watchedEvents = \array_filter(
             $subscribedEvents,
             function ($value) use ($subscribedEvents, $lookedForEvents) {
-                $eventName = array_search($value, $subscribedEvents, true);
+                $eventName = \array_search($value, $subscribedEvents, true);
 
-                return in_array($eventName, $lookedForEvents, true);
+                return \in_array($eventName, $lookedForEvents, true);
             }
         );
         $priorities = [];
@@ -58,17 +59,17 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
             $priority = $this->filterPriorityValue($reaction);
             $priorities[$eventName] = $priority;
         }
-        self::assertCount(count($lookedForEvents), $priorities);
+        self::assertCount(\count($lookedForEvents), $priorities);
 
         return $priorities;
     }
 
     private function filterPriorityValue(array $reaction)
     {
-        $wrappedPriority = array_filter($reaction, function ($value) {
-            return is_numeric($value);
+        $wrappedPriority = \array_filter($reaction, function ($value) {
+            return \is_numeric($value);
         });
-        self::assertTrue(is_array($wrappedPriority));
+        self::assertTrue(\is_array($wrappedPriority));
 
         return current($wrappedPriority);
     }
@@ -78,46 +79,47 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
      */
     public function I_got_names_converted_in_email()
     {
-        $mauticFactory = $this->createMauticFactory($toVocalize = 'foo [bar|vocative] baz', $vocalized = 'qux');
+        $mauticFactory = $this->createMauticFactory($toVocalize = 'foo [bar|vocative] baz', ['bar' => 'qux']);
         $subscriber = new EmailNameToVocativeSubscriber($mauticFactory);
-        $emailSendEvent = $this->createEmailSentEvent($toVocalize, $vocalized);
+        $emailSendEvent = $this->createEmailSentEvent($toVocalize, ['bar' => 'qux']);
         $subscriber->onEmailGenerate($emailSendEvent);
         self::assertTrue(true);
     }
 
     /**
      * @param string $toVocalize
-     * @param string $vocalized
+     * @param array $tokensToReplace
      * @return EmailSendEvent|\Mockery\MockInterface $emailSendEvent
      */
-    private function createEmailSentEvent($toVocalize, $vocalized)
+    private function createEmailSentEvent(string $toVocalize, array $tokensToReplace): EmailSendEvent
     {
-        $emailSendEvent = $this->mockery('\Mautic\EmailBundle\Event\EmailSendEvent');
+        $emailSendEvent = $this->mockery(EmailSendEvent::class);
         $emailSendEvent->shouldReceive('getContent')
+            ->once()
             ->with(true)// with tokens replaced
-            ->once()
             ->andReturn($toVocalize);
-        $emailSendEvent->shouldReceive('setContent')
-            ->once()
-            ->with($vocalized);
         $emailSendEvent->shouldReceive('getSubject')
             ->once()
-            ->andReturn($toVocalize);
-        $emailSendEvent->shouldReceive('setSubject')
+            ->andReturn('');
+        $emailSendEvent->shouldReceive('getPlainText')
             ->once()
-            ->with($vocalized);
+            ->andReturn('');
+        $emailSendEvent->shouldReceive('addTokens')
+            ->once()
+            ->with($tokensToReplace)
+            ->andReturn('');
 
         return $emailSendEvent;
     }
 
     /**
      * @param string $toVocative
-     * @param string $inVocative
+     * @param array|string[] $previousToReplacedTokens
      * @return \Mockery\MockInterface|MauticFactory
      */
-    private function createMauticFactory($toVocative, $inVocative)
+    private function createMauticFactory(string $toVocative, array $previousToReplacedTokens): MauticFactory
     {
-        $mauticFactory = $this->mockery('\Mautic\CoreBundle\Factory\MauticFactory');
+        $mauticFactory = $this->mockery(MauticFactory::class);
         $mauticFactory->shouldReceive('getTemplating');
         $mauticFactory->shouldReceive('getRequest');
         $mauticFactory->shouldReceive('getSecurity');
@@ -126,15 +128,17 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
         $mauticFactory->shouldReceive('getDispatcher');
         $mauticFactory->shouldReceive('getTranslator');
         $mauticFactory->shouldReceive('getKernel')
-            ->andReturn($kernel = $this->mockery('\stdClass'));
+            ->andReturn($kernel = $this->mockery(\stdClass::class));
         $kernel->shouldReceive('getContainer')
-            ->andReturn($container = $this->mockery('\stdClass'));
+            ->andReturn($container = $this->mockery(\stdClass::class));
         $container->shouldReceive('get')
+            ->zeroOrMoreTimes()
             ->with('plugin.vocative.name_converter')
-            ->andReturn($nameConverter = $this->mockery('\MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter'));
+            ->andReturn($nameConverter = $this->mockery(NameToVocativeConverter::class));
         $nameConverter->shouldReceive('findAndReplace')
+            ->zeroOrMoreTimes()
             ->with($toVocative)
-            ->andReturn($inVocative);
+            ->andReturn($previousToReplacedTokens);
 
         return $mauticFactory;
     }
