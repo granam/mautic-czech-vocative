@@ -11,12 +11,13 @@ class MauticVocativeBundle extends PluginBundleBase
 
     public function boot()
     {
+        /** @noinspection PhpIncludeInspection */
         require_once self::CZECH_NAME_CLASS_SOURCE_FILE;
     }
 
     /**
      * To provide dependent library without dependency on Composer.
-     * For usage @see scripts section in composer.json
+     * For usage @see scripts -> pre-autoload-dump section in composer.json
      * @throws \LogicException
      * @throws \Symfony\Component\Filesystem\Exception\IOException
      */
