@@ -22,53 +22,40 @@ class NameToVocativeConverter
      * @param NameToVocativeOptions|null $options
      * @return string
      */
-    public function toVocative($name, NameToVocativeOptions $options = null)
+    public function toVocative(string $name, NameToVocativeOptions $options = null): string
     {
         if ($options !== null) {
             if ($name === '') {
                 if ($options->hasEmptyNameAlias()) {
-                    $name = $options->getEmptyNameAlias();
+                    $name = (string)$options->getEmptyNameAlias();
                 }
             } else if ($options->hasMaleAlias() && $this->name->isMale($name)) {
-                $name = $options->getMaleAlias();
+                $name = (string)$options->getMaleAlias();
             } else if ($options->hasFemaleAlias() && !$this->name->isMale($name)) {
-                $name = $options->getFemaleAlias();
+                $name = (string)$options->getFemaleAlias();
             }
         }
         if ($name === '') {
             return '';
         }
 
-        $decodedName = html_entity_decode($name);
+        $decodedName = \html_entity_decode($name);
         if ($decodedName === $name) {
             return $this->name->vocative($name);
         }
 
-        return htmlentities($this->name->vocative($decodedName));
+        return \htmlentities($this->name->vocative($decodedName));
     }
 
     /**
      * Searching for [name|vocative] (enclosed by native or URL encoded square brackets,
      * with name optionally enclosed by [square brackets] as well to match email preview
      * @param string $value
-     * @return string
+     * @return array
      */
-    public function findAndReplace($value)
+    public function findAndReplace(string $value): array
     {
-        $value = $this->vocalizeByShortCodes($value);
-        $value = $this->removeEmptyShortCodes($value);
-
-        return $value;
-    }
-
-    /**
-     * Used regexp is split to parts only because of logical grouping to easier read.
-     *
-     * @param string $value
-     * @return string
-     */
-    private function vocalizeByShortCodes($value)
-    {
+        // regexp is split to parts just to be read easier (logical grouping)
         $regexpParts = [
             '(?<toReplace>',
             [
@@ -104,6 +91,8 @@ class NameToVocativeConverter
             ')'
         ];
         $regexp = '~' . RecursiveImplode::implode($regexpParts) . '~u'; // u = UTF-8
+        $tokens = [];
+        /** @var array|string[][] $matches */
         if (preg_match_all($regexp, $value, $matches) > 0) {
             foreach ($matches['toReplace'] as $index => $toReplace) {
                 $toVocative = '';
@@ -113,40 +102,10 @@ class NameToVocativeConverter
                     $toVocative = $matches['toVocative2'][$index];
                 }
                 $stringOptions = $matches['options'][$index];
-                $value = str_replace(
-                    $toReplace,
-                    $this->toVocative($toVocative, NameToVocativeOptions::createFromString($stringOptions)),
-                    $value
-                );
+                $tokens[$toReplace] = $this->toVocative($toVocative, NameToVocativeOptions::createFromString($stringOptions));
             }
         }
 
-        return $value;
-    }
-
-    private function removeEmptyShortCodes($value)
-    {
-        $regexpParts = [
-            '(?<toReplace>',
-            [
-                '(?:\[|%5B)', // opening bracket, native or URL encoded
-                '\s*', // optional leading white character(s)
-                '(?<toKeep>[^|\]]*[^\s|\]])?', // do not delete string before pipe or closing bracket (but trim it)
-                '\s*\|\s*vocative\s*', // pipe and "vocative" keyword, optionally surrounded by white characters
-                '(?:\s*\([^)]*\))?', // optional options
-                '\s*', // optional trailing white character(s)
-                '(?:\]|%5D)' // closing bracket, native or URL encoded
-            ],
-            ')'
-        ];
-        $regexp = '~' . RecursiveImplode::implode($regexpParts) . '~u'; // u = UTF-8
-        if (preg_match_all($regexp, $value, $matches) > 0) {
-            foreach ($matches['toReplace'] as $index => $toReplace) {
-                $toKeep = $matches['toKeep'][$index];
-                $value = str_replace($toReplace, $toKeep, $value);
-            }
-        }
-
-        return $value;
+        return $tokens;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace MauticPlugin\MauticVocativeBundle\Tests\Service;
 
+use Mautic\EmailBundle\Event\EmailSendEvent;
 use MauticPlugin\MauticVocativeBundle\CzechVocative\CzechName;
 use MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter;
 use MauticPlugin\MauticVocativeBundle\Tests\FOMTestWithMockery;
@@ -69,7 +70,7 @@ class NameToVocativeConverterTest extends FOMTestWithMockery
         $expectedName = $nameOrMaleAlias;
         if ($genderOrEmpty === 'female') {
             $expectedName = $femaleAlias;
-        } else if ($genderOrEmpty === 'empty') {
+        } elseif ($genderOrEmpty === 'empty') {
             $expectedName = $emptyNameAlias;
         }
         $nameConverter = new NameToVocativeConverter(
@@ -111,15 +112,15 @@ class NameToVocativeConverterTest extends FOMTestWithMockery
                             $vocalizedString = '';
                             if ($conversionShouldHappen) {
                                 $vocalizedString = 'Příliš žluťkoučký kůň úpěl ďábelské ódy';
-                                if ($toConvert !== $nameOrMaleAlias && html_entity_decode($toConvert) === $nameOrMaleAlias) {
-                                    $vocalizedString = htmlentities($vocalizedString);
+                                if ($toConvert !== $nameOrMaleAlias && \html_entity_decode($toConvert) === $nameOrMaleAlias) {
+                                    $vocalizedString = \htmlentities($vocalizedString);
                                 }
                             }
+                            $toReplace = "[{$space2}$toConvert{$space1}|vocative{$space2}{$options}{$space1}]";
                             self::assertSame(
-                                'foo' . $space1 . \str_repeat('[', $openingBracketCount - 1)
-                                . $vocalizedString
-                                . \str_repeat(']', $closingBracketCount - 1) . $space2 . 'bar',
-                                $nameConverter->findAndReplace($wrappedByShortCode)
+                                [$toReplace => $vocalizedString],
+                                $nameConverter->findAndReplace($wrappedByShortCode),
+                                "Expected\n'{$toReplace}' => '{$vocalizedString}'\nparsed from\n'{$wrappedByShortCode}'"
                             );
                         }
                     }
@@ -150,7 +151,7 @@ class NameToVocativeConverterTest extends FOMTestWithMockery
      */
     public function I_do_not_trigger_conversion_by_empty_value_without_empty_string_alias()
     {
-        $this->checkEmailContentConversion('', false /* conversion should not be called */, '');
+        $this->checkEmailContentConversion('', false /* conversion should not be called */);
     }
 
     /**
@@ -236,7 +237,28 @@ class NameToVocativeConverterTest extends FOMTestWithMockery
      */
     public function I_got_vocalized_content_in_complex_string()
     {
+        $rawContent = <<<HTML
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<p><a href="http://example.com/?%5B[[Alois]]|vocative%5D">XSS for free!&nbsp;</a></p><!-- wrong -->
+<div><a href="http://example.com/?%5BKarel|vocative%5D">Click on me&nbsp;</a></div>
+<p>[First Name karel]</p> <!-- missing shortcode -->
+<span>[[First Name]|vocative]</span><!-- correct -->
+<p>[ [ First Name karel ] | vocative ]</p>
+<p>[fitnesačka|vocative(androiďačka)]</p>
+<p>[|vocative]</p>
+<div>[    | vocative ( Alone in the dark, Alice ) ]</div>
+</body>
+</html>
+HTML;
         $nameConverter = new NameToVocativeConverter($this->createSimpleCzechName($replacement = 'foo'));
+        $event = new EmailSendEvent();
+        $event->setContent($rawContent);
+        $tokens = $nameConverter->findAndReplace($rawContent);
+        $event->addTokens($tokens);
         self::assertSame(<<<HTML
 <html>
 <head>
@@ -255,24 +277,7 @@ class NameToVocativeConverterTest extends FOMTestWithMockery
 </html>
 HTML
             ,
-            $nameConverter->findAndReplace(<<<HTML
-<html>
-<head>
-	<title></title>
-</head>
-<body>
-<p><a href="http://example.com/?%5B[[Alois]]|vocative%5D">XSS for free!&nbsp;</a></p><!-- wrong -->
-<div><a href="http://example.com/?%5BKarel|vocative%5D">Click on me&nbsp;</a></div>
-<p>[First Name karel]</p> <!-- missing shortcode -->
-<span>[[First Name]|vocative]</span><!-- correct -->
-<p>[ [ First Name karel ] | vocative ]</p>
-<p>[fitnesačka|vocative(androiďačka)]</p>
-<p>[|vocative]</p>
-<div>[    | vocative ( Alone in the dark, Alice ) ]</div>
-</body>
-</html>
-HTML
-            )
+            $event->getContent(true /* with tokens replaced */)
         );
     }
 
