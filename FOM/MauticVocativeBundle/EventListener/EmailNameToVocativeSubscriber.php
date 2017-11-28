@@ -10,6 +10,16 @@ class EmailNameToVocativeSubscriber extends CommonSubscriber
 {
 
     /**
+     * @var NameToVocativeConverter
+     */
+    private $nameToVocativeConverter;
+
+    public function __construct(NameToVocativeConverter $nameToVocativeConverter)
+    {
+        $this->nameToVocativeConverter = $nameToVocativeConverter;
+    }
+
+    /**
      * @return array
      */
     public static function getSubscribedEvents(): array
@@ -28,19 +38,11 @@ class EmailNameToVocativeSubscriber extends CommonSubscriber
         $content = $event->getSubject()
             . $event->getContent(true /* with tokens replaced (to get names) */)
             . $event->getPlainText();
-        $tokenList = $this->getConverter()->findAndReplace($content);
+        $tokenList = $this->nameToVocativeConverter->findAndReplace($content);
         if (\count($tokenList) > 0) {
             $event->addTokens($tokenList);
             unset($tokenList);
         }
-    }
-
-    /**
-     * @return NameToVocativeConverter|object
-     */
-    private function getConverter(): NameToVocativeConverter
-    {
-        return $this->factory->getKernel()->getContainer()->get('plugin.vocative.name_converter');
     }
 
 }

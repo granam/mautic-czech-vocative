@@ -1,13 +1,13 @@
 <?php
 namespace MauticPlugin\MauticVocativeBundle\Tests\EventListener;
 
-use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\EmailSendEvent;
 use Mautic\LeadBundle\EventListener\EmailSubscriber;
 use MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber;
 use MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter;
 use MauticPlugin\MauticVocativeBundle\Tests\FOMTestWithMockery;
+use Mockery\MockInterface;
 
 class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
 {
@@ -79,8 +79,7 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
      */
     public function I_got_names_converted_in_email()
     {
-        $mauticFactory = $this->createMauticFactory($toVocalize = 'foo [bar|vocative] baz', ['bar' => 'qux']);
-        $subscriber = new EmailNameToVocativeSubscriber($mauticFactory);
+        $subscriber = new EmailNameToVocativeSubscriber($this->createNameToVocativeConverter($toVocalize = 'foo [bar|vocative] baz', ['bar' => 'qux']));
         $emailSendEvent = $this->createEmailSentEvent($toVocalize, ['bar' => 'qux']);
         $subscriber->onEmailGenerate($emailSendEvent);
         self::assertTrue(true);
@@ -114,32 +113,17 @@ class EmailNameToVocativeSubscriberTest extends FOMTestWithMockery
 
     /**
      * @param string $toVocative
-     * @param array|string[] $previousToReplacedTokens
-     * @return \Mockery\MockInterface|MauticFactory
+     * @param array $previousToReplacedTokens
+     * @return NameToVocativeConverter|MockInterface
      */
-    private function createMauticFactory(string $toVocative, array $previousToReplacedTokens): MauticFactory
+    private function createNameToVocativeConverter(string $toVocative, array $previousToReplacedTokens): NameToVocativeConverter
     {
-        $mauticFactory = $this->mockery(MauticFactory::class);
-        $mauticFactory->shouldReceive('getTemplating');
-        $mauticFactory->shouldReceive('getRequest');
-        $mauticFactory->shouldReceive('getSecurity');
-        $mauticFactory->shouldReceive('getSerializer');
-        $mauticFactory->shouldReceive('getSystemParameters');
-        $mauticFactory->shouldReceive('getDispatcher');
-        $mauticFactory->shouldReceive('getTranslator');
-        $mauticFactory->shouldReceive('getKernel')
-            ->andReturn($kernel = $this->mockery(\stdClass::class));
-        $kernel->shouldReceive('getContainer')
-            ->andReturn($container = $this->mockery(\stdClass::class));
-        $container->shouldReceive('get')
-            ->zeroOrMoreTimes()
-            ->with('plugin.vocative.name_converter')
-            ->andReturn($nameConverter = $this->mockery(NameToVocativeConverter::class));
+        $nameConverter = $this->mockery(NameToVocativeConverter::class);
         $nameConverter->shouldReceive('findAndReplace')
             ->zeroOrMoreTimes()
             ->with($toVocative)
             ->andReturn($previousToReplacedTokens);
 
-        return $mauticFactory;
+        return $nameConverter;
     }
 }

@@ -5,10 +5,12 @@ return [
     'author' => 'Friends of Mautic',
     'version' => '1.3.1.',
 
+    // TODO test services creation
     'services' => [
         'events' => [
             'plugin.vocative.emailNameToVocative.subscriber' => [
-                'class' => \MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber::class
+                'class' => \MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber::class,
+                'arguments' => ['plugin.vocative.name_converter']
             ],
             'plugin.vocative.dynamic.content.subscriber' => [
                 'class' => \MauticPlugin\MauticVocativeBundle\EventListener\DynamicContentSubscriber::class,
