@@ -38,7 +38,7 @@ class DynamicContentSubscriber extends CommonSubscriber
     {
         $content   = $event->getContent();
         $tokenList = $this->getConverter()->findAndReplace($content);
-        if (\count($tokenList)) {
+        if (\count($tokenList) > 0) {
             $content = \str_replace(\array_keys($tokenList), \array_values($tokenList), $content);
         }
         $event->setContent($content);
