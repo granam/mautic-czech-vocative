@@ -14,7 +14,7 @@
   },
   "require-dev": {
     "granam/czech-vocative": "~2.0",
-    "friendsofmautic/bundle-skeleton": "dev-master",
+    "friendsofmautic/bundle-skeleton": "~1.4",
     "phpunit/phpunit": "~6.0",
     "mockery/mockery": "~1.0"
   },
