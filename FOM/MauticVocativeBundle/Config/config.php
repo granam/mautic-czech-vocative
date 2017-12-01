@@ -12,9 +12,6 @@ return [
                 'class' => \MauticPlugin\MauticVocativeBundle\EventListener\EmailNameToVocativeSubscriber::class,
                 'arguments' => ['plugin.vocative.name_converter']
             ],
-            'plugin.vocative.dynamic.content.subscriber' => [
-                'class' => \MauticPlugin\MauticVocativeBundle\EventListener\DynamicContentSubscriber::class,
-            ],
         ],
         'other' => [
             'plugin.vocative.name_converter' => [

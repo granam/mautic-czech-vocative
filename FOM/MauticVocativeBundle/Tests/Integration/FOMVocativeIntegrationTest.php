@@ -1,8 +1,10 @@
 <?php
 namespace MauticPlugin\MauticVocativeBundle\Tests\Integration;
 
+use Mautic\CoreBundle\Factory\MauticFactory;
 use MauticPlugin\MauticVocativeBundle\Integration\FOMVocativeIntegration;
 use MauticPlugin\MauticVocativeBundle\Tests\FOMTestWithMockery;
+use Mockery\MockInterface;
 
 class FOMVocativeIntegrationTest extends FOMTestWithMockery
 {
@@ -12,11 +14,19 @@ class FOMVocativeIntegrationTest extends FOMTestWithMockery
      */
     public function I_can_integrate_it_by_proper_name()
     {
-        $integration = new FOMVocativeIntegration();
+        $integration = new FOMVocativeIntegration($this->createFactory());
         self::assertSame(
-            $this->parseExpectedName(\get_called_class()),
+            $this->parseExpectedName(static::class),
             $integration->getName()
         );
+    }
+
+    /**
+     * @return MauticFactory|MockInterface
+     */
+    private function createFactory(): MauticFactory
+    {
+        return $this->mockery(MauticFactory::class);
     }
 
     private function parseExpectedName($testClassName)
@@ -31,7 +41,7 @@ class FOMVocativeIntegrationTest extends FOMTestWithMockery
      */
     public function I_do_not_need_to_authenticate_to_use_it()
     {
-        $integration = new FOMVocativeIntegration();
+        $integration = new FOMVocativeIntegration($this->createFactory());
         self::assertSame(
             'none',
             $integration->getAuthenticationType()
