@@ -21,6 +21,17 @@ use MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter;
  */
 class DynamicContentSubscriber extends CommonSubscriber
 {
+
+    /**
+     * @var NameToVocativeConverter
+     */
+    private $nameToVocativeConverter;
+
+    public function __construct(NameToVocativeConverter $nameToVocativeConverter)
+    {
+        $this->nameToVocativeConverter = $nameToVocativeConverter;
+    }
+
     /**
      * @return array
      */
@@ -36,19 +47,11 @@ class DynamicContentSubscriber extends CommonSubscriber
      */
     public function onTokenReplacement(MauticEvents\TokenReplacementEvent $event): void
     {
-        $content   = $event->getContent();
-        $tokenList = $this->getConverter()->findAndReplace($content);
+        $content = $event->getContent();
+        $tokenList = $this->nameToVocativeConverter->findAndReplace($content);
         if (\count($tokenList) > 0) {
             $content = \str_replace(\array_keys($tokenList), \array_values($tokenList), $content);
         }
         $event->setContent($content);
-    }
-
-    /**
-     * @return NameToVocativeConverter
-     */
-    private function getConverter(): NameToVocativeConverter
-    {
-        return $this->factory->getKernel()->getContainer()->get('plugin.vocative.name_converter');
     }
 }
