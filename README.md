@@ -21,6 +21,10 @@ You can also set aliases to be used (and vocalized) instead of the name.
     - `[monika|vocative(,For gentlemen only!)]` = `For gentlemen only!` (because of the trailing non-character the string is untouched)
     - `[  |vocative(Karel,Monika)]` = ``
     - `[  |vocative(Karel,Monika,Batman)]` = `Batmane`
+    
+### Dynamic Web Content support
+Thanks to [Zdeno Kuzmany](https://github.com/kuzmany/)
+the [Dynamic Web Content](https://mautic.org/docs/en/dwc/index.html) is also supported and processed by vocative. 
 
 # Install
 
@@ -35,6 +39,9 @@ You can also set aliases to be used (and vocalized) instead of the name.
  - if everything goes well, you got new plugin *FOMVocative*.
 
 ## Compatibility
+### Mautic v2.*
+- virtually tested with Mautic 2.11
+### Mautic v1.*
 - tested with Mautic 1.3.1
 - tested with Mautic 1.3.0
 - tested with Mautic 1.2.4
