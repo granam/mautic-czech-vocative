@@ -8,7 +8,7 @@ hint: use `CTRL+SHIFT+V` to insert copied text without formatting, also check so
 button for unwanted formatting
 - also foreign and non-human names are converted to czech form `[Cassandra|vocative]` = `Cassandro`, `[android|vocative]` = `Androide`
 - you can use it even in Subject of your email (unlike other shortcodes).
-- **always tests your email before sending to real people**
+- **always test your email before sending it to real people**
 
 ### Aliases
 You can also set aliases to be used (and vocalized) instead of the name.
@@ -42,6 +42,7 @@ the [Dynamic Web Content](https://mautic.org/docs/en/dwc/index.html) is also sup
 ### Mautic v2.*
 - virtually tested with Mautic 2.11
 ### Mautic v1.*
+- virtually tested with Mautic 1.4.0
 - tested with Mautic 1.3.1
 - tested with Mautic 1.3.0
 - tested with Mautic 1.2.4
