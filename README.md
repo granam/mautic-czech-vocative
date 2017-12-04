@@ -40,7 +40,7 @@ the [Dynamic Web Content](https://mautic.org/docs/en/dwc/index.html) is also sup
 
 ## Compatibility
 ### Mautic v2.*
-- virtually tested with Mautic 2.11
+- virtually tested with Mautic 2.* up to 2.11
 ### Mautic v1.*
 - virtually tested with Mautic 1.4.0
 - tested with Mautic 1.3.1
@@ -59,6 +59,8 @@ the [Dynamic Web Content](https://mautic.org/docs/en/dwc/index.html) is also sup
 # Credits
 The plugin has been created thanks to sponsor [svetandroida.cz](https://www.svetandroida.cz/)
 and thanks to the author of free czech vocative library [`bigit/vokativ`](https://bitbucket.org/bigit/vokativ.git) Petr Joachim.
+
+Additional thanks to [vietnamisa.cz](http://www.vietnamisa.cz/) for their help with bug-fixes and improvements.
 
 # Hint for mautic Twig plugin
 If you are going to create a Mautic plugin for [Twig](https://twig.symfony.com/doc/2.x/), a good start can be [mautic-twig-plugin-skeleton](https://github.com/dongilbert/mautic-twig-plugin-skeleton).
