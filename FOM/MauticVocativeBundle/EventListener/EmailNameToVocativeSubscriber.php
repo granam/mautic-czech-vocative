@@ -33,7 +33,7 @@ class EmailNameToVocativeSubscriber extends CommonSubscriber
     /**
      * @param EmailSendEvent $event
      */
-    public function onEmailGenerate(EmailSendEvent $event): void
+    public function onEmailGenerate(EmailSendEvent $event)
     {
         $content = $event->getSubject()
             . $event->getContent(true /* with tokens replaced (to get names) */)
