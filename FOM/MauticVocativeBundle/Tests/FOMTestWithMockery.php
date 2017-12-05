@@ -11,7 +11,11 @@ class FOMTestWithMockery extends TestCase
         \Mockery::close();
     }
 
-    protected function mockery($className): MockInterface
+    /**
+     * @param string $className
+     * @return MockInterface
+     */
+    protected function mockery(string $className): MockInterface
     {
         return \Mockery::mock($className);
     }

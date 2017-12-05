@@ -2,12 +2,10 @@
 namespace MauticPlugin\MauticVocativeBundle\EventListener;
 
 use Mautic\CoreBundle\Event\TokenReplacementEvent;
-use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\DynamicContentBundle\DynamicContentEvents;
 use MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter;
 use MauticPlugin\MauticVocativeBundle\Tests\FOMTestWithMockery;
 use Mockery\MockInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class DynamicContentSubscriberTest extends FOMTestWithMockery
 {
@@ -37,13 +35,12 @@ class DynamicContentSubscriberTest extends FOMTestWithMockery
      */
     public function I_can_use_callback()
     {
-        $dynamicContentSubscriber = new DynamicContentSubscriber();
         $tokenToReplace = 'bar';
         $initialContent = "foo $tokenToReplace baz";
         $replacedToken = 'qux';
         $replacedContent = "foo $replacedToken baz";
         $converter = $this->createConverter($initialContent, [$tokenToReplace => $replacedToken]);
-        $dynamicContentSubscriber->setFactory($this->createFactory($converter));
+        $dynamicContentSubscriber = new DynamicContentSubscriber($converter);
         $tokenReplacementEvent = $this->mockery(TokenReplacementEvent::class);
         $tokenReplacementEvent->shouldReceive('getContent')
             ->once()
@@ -55,7 +52,7 @@ class DynamicContentSubscriberTest extends FOMTestWithMockery
                 self::assertSame($replacedContent, $contentToSet, 'Expected different replaced content');
                 // this does not return anything, its just tests set value
             });
-        /** @var TokenReplacementEvent $tokenReplacementEvent */
+        /** @var TokenReplacementEvent|MockInterface $tokenReplacementEvent */
         $dynamicContentSubscriber->onTokenReplacement($tokenReplacementEvent);
     }
 
@@ -73,24 +70,5 @@ class DynamicContentSubscriberTest extends FOMTestWithMockery
             ->andReturn($tokensToReplace);
 
         return $converter;
-    }
-
-    /**
-     * @param NameToVocativeConverter $converter
-     * @return MauticFactory|MockInterface
-     */
-    private function createFactory(NameToVocativeConverter $converter): MauticFactory
-    {
-        $factory = $this->mockery(MauticFactory::class);
-        $factory->shouldReceive('getKernel')
-            ->andReturn($kernel = $this->mockery(\AppKernel::class));
-        $kernel->shouldReceive('getContainer')
-            ->andReturn($container = $this->mockery(ContainerInterface::class));
-        $container->shouldReceive('get')
-            ->zeroOrMoreTimes()
-            ->with('plugin.vocative.name_converter')
-            ->andReturn($converter);
-
-        return $factory;
     }
 }
