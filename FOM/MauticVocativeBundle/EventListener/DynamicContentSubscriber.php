@@ -45,7 +45,7 @@ class DynamicContentSubscriber extends CommonSubscriber
     /**
      * @param MauticEvents\TokenReplacementEvent $event
      */
-    public function onTokenReplacement(MauticEvents\TokenReplacementEvent $event): void
+    public function onTokenReplacement(MauticEvents\TokenReplacementEvent $event)
     {
         $content = $event->getContent();
         $tokenList = $this->nameToVocativeConverter->findAndReplace($content);
