@@ -12,14 +12,14 @@
 namespace MauticPlugin\MauticVocativeBundle\EventListener;
 
 use Mautic\CoreBundle\Event as MauticEvents;
-use Mautic\CoreBundle\EventListener\CommonSubscriber;
 use Mautic\DynamicContentBundle\DynamicContentEvents;
 use MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Class DynamicContentSubscriber.
  */
-class DynamicContentSubscriber extends CommonSubscriber
+class DynamicContentSubscriber implements EventSubscriberInterface
 {
 
     /**

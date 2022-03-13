@@ -2,7 +2,7 @@
 In your Mautic insert into an email template this shortcode around *some name*
 `[some name|vocative]`
 - for example `[Karel|vocative]`
-- or better example `[{leadfield=firstname}|vocative]`  
+- or better example `[{contactfield=firstname}|vocative]`  
 hint: use `CTRL+SHIFT+V` to insert copied text without formatting, also check source code of your email template by
 ![Mautic source code icon](https://raw.githubusercontent.com/mautic/mautic/1.3.1/app/bundles/CoreBundle/Assets/js/libraries/ckeditor/plugins/sourcedialog/icons/sourcedialog.png)
 button for unwanted formatting
@@ -12,7 +12,7 @@ button for unwanted formatting
 
 ### Aliases
 You can also set aliases to be used (and vocalized) instead of the name.
-- `[{leadfield=firstname}|vocative(sirius,andromeda,fill your name plase!)]` leading into
+- `[{contactfield=firstname}|vocative(sirius,andromeda,fill your name plase!)]` leading into
     - if `firstname` is male, let's say Roman, the result is `Siriusi`
     - if `firstname` is female, for example Gloria, the result is `Andromedo`
     - if `firstname` is empty, or from white characters only respectively, the result is `Fill your name please!`
@@ -39,14 +39,8 @@ the [Dynamic Web Content](https://mautic.org/docs/en/dwc/index.html) is also sup
  - if everything goes well, you got new plugin *FOMVocative*.
 
 ## Compatibility
-### Mautic v2.*
-- virtually tested with Mautic 2.* up to 2.11
-### Mautic v1.*
-- virtually tested with Mautic 1.4.0
-- tested with Mautic 1.3.1
-- tested with Mautic 1.3.0
-- tested with Mautic 1.2.4
-- unknown, but possible compatibility with lower versions.
+
+Mautic 3 and Mautic 4
 
 ## Troubleshooting
  If any error happens, first of all, have you **cleared the cache**?
