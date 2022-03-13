@@ -1,12 +1,12 @@
 <?php
 namespace MauticPlugin\MauticVocativeBundle\EventListener;
 
-use Mautic\CoreBundle\EventListener\CommonSubscriber;
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\EmailSendEvent;
 use MauticPlugin\MauticVocativeBundle\Service\NameToVocativeConverter;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class EmailNameToVocativeSubscriber extends CommonSubscriber
+class EmailNameToVocativeSubscriber implements EventSubscriberInterface
 {
 
     /**
