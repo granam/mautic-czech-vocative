@@ -7,7 +7,7 @@ use MauticPlugin\GranamVocativeBundle\EventListener\EmailNameToVocativeSubscribe
 use MauticPlugin\GranamVocativeBundle\EventListener\VocativeDynamicContentSubscriber;
 
 return [
-    'name' => 'Word to vocative',
+    'name' => 'Vocative',
     'description' => 'Modifier to convert a name or given gender-dependent alias to its vocative form, useful for email opening salutation.',
     'author' => 'Friends of Mautic',
     'version' => '2.1.0',
