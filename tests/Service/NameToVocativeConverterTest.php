@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MauticPlugin\GranamVocativeBundle\Tests\Service;
 
+use Granam\CzechVocative\CzechName;
 use Mautic\EmailBundle\Event\EmailSendEvent;
-use MauticPlugin\GranamVocativeBundle\CzechVocative\CzechName;
 use MauticPlugin\GranamVocativeBundle\Service\NameToVocativeConverter;
 use MauticPlugin\GranamVocativeBundle\Tests\GranamTestWithMockery;
 use Mockery\MockInterface;
@@ -241,7 +241,7 @@ class NameToVocativeConverterTest extends GranamTestWithMockery
     public function I_got_vocalized_content_in_complex_string()
     {
         $rawContent = <<<HTML
-<html>
+<html lang="en">
 <head>
 	<title></title>
 </head>
@@ -263,7 +263,7 @@ HTML;
         $tokens = $nameConverter->findAndReplace($rawContent);
         $event->addTokens($tokens);
         self::assertSame(<<<HTML
-<html>
+<html lang="en">
 <head>
 	<title></title>
 </head>

@@ -1,7 +1,7 @@
 <?php
 namespace MauticPlugin\GranamVocativeBundle\Service;
 
-use MauticPlugin\GranamVocativeBundle\CzechVocative\CzechName;
+use Granam\CzechVocative\CzechName;
 use MauticPlugin\GranamVocativeBundle\Service\Helpers\NameToVocativeOptions;
 use MauticPlugin\GranamVocativeBundle\Service\Helpers\RecursiveImplode;
 

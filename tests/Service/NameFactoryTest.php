@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MauticPlugin\GranamVocativeBundle\Tests\Service;
 
-use MauticPlugin\GranamVocativeBundle\CzechVocative\CzechName;
+use Granam\CzechVocative\CzechName;
 use MauticPlugin\GranamVocativeBundle\Service\NameFactory;
 use PHPUnit\Framework\TestCase;
 

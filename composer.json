@@ -18,7 +18,6 @@
   },
   "require": {
     "php": ">=7.3",
-    "ext-iconv": "*",
     "granam/czech-vocative": "^2.2"
   },
   "require-dev": {

@@ -62,7 +62,7 @@ class EmailNameToVocativeSubscriberTest extends GranamTestWithMockery
             $priority = $this->filterPriorityValue($reaction);
             $priorities[$eventName] = $priority;
         }
-        self::assertCount(\count($lookedForEvents), $priorities);
+        self::assertCount(count($lookedForEvents), $priorities);
 
         return $priorities;
     }
@@ -72,7 +72,7 @@ class EmailNameToVocativeSubscriberTest extends GranamTestWithMockery
         $wrappedPriority = array_filter($reaction, function ($value) {
             return is_numeric($value);
         });
-        self::assertTrue(is_array($wrappedPriority));
+        self::assertIsArray($wrappedPriority);
 
         return current($wrappedPriority);
     }

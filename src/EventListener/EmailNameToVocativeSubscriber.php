@@ -44,7 +44,7 @@ class EmailNameToVocativeSubscriber implements EventSubscriberInterface
             . $event->getContent(true /* with tokens replaced (to get names) */)
             . $event->getPlainText();
         $tokenList = $this->nameToVocativeConverter->findAndReplace($content);
-        if (\count($tokenList) > 0) {
+        if (count($tokenList) > 0) {
             $event->addTokens($tokenList);
             unset($tokenList);
         }
