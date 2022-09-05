@@ -8,12 +8,12 @@
   },
   "autoload": {
     "psr-4": {
-      "MauticPlugin\\GranamVocativeBundle\\": "src"
+      "MauticPlugin\\GranamVocativeBundle\\": "."
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "MauticPlugin\\GranamVocativeBundle\\Tests\\": "tests"
+      "MauticPlugin\\GranamVocativeBundle\\Tests\\": "Tests"
     }
   },
   "require": {

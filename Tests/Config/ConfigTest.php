@@ -13,7 +13,7 @@ class ConfigTest extends TestCase
      */
     public function Classes_listed_in_config_exists()
     {
-        $configFile = __DIR__ . '/../../src/Config/config.php';
+        $configFile = __DIR__ . '/../../Config/config.php';
         self::assertFileExists($configFile);
         $config = include $configFile;
         self::assertTrue(is_array($config));
