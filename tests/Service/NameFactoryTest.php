@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+namespace MauticPlugin\GranamVocativeBundle\Tests\Service;
+
+use MauticPlugin\GranamVocativeBundle\CzechVocative\CzechName;
+use MauticPlugin\GranamVocativeBundle\Service\NameFactory;
+use PHPUnit\Framework\TestCase;
+
+class NameFactoryTest extends TestCase
+{
+    /**
+     * @test
+     */
+    public function I_can_create_name_by_factory()
+    {
+        $czechName = NameFactory::createCzechName();
+        self::assertInstanceOf(CzechName::class, $czechName);
+    }
+}

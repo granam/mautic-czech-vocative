@@ -1,32 +1,38 @@
 {
-  "name": "friendsofmautic/vocative",
+  "name": "granam/mautic-vocative-bundle",
   "license": "MIT",
-  "type": "mautic-bundle",
   "description": "Modifier for first names to convert their base form to vocative",
+  "type": "mautic-plugin",
+  "extra": {
+    "install-directory-name": "GranamVocativeBundle"
+  },
   "autoload": {
     "psr-4": {
-      "MauticPlugin\\": "FOM/"
+      "MauticPlugin\\GranamVocativeBundle\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "MauticPlugin\\GranamVocativeBundle\\Tests\\": "tests"
     }
   },
   "require": {
-    "php": ">=7.0",
-    "ext-iconv": "*"
+    "php": ">=7.3",
+    "ext-iconv": "*",
+    "granam/czech-vocative": "^2.2"
   },
   "require-dev": {
-    "granam/czech-vocative": "~2.0",
-    "friendsofmautic/bundle-skeleton": "^2.11",
-    "phpunit/phpunit": "~6.0",
-    "mockery/mockery": "~1.0"
+    "phpunit/phpunit": "~9.0",
+    "mautic/core-lib": "^4.4",
+    "mockery/mockery": "~1.0",
+    "rector/rector": "^0.14.2"
   },
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/mautic/mautic.git"
-    }
-  ],
-  "minimum-stability": "dev",
-  "prefer-stable": true,
   "scripts": {
-    "pre-autoload-dump": "MauticPlugin\\MauticVocativeBundle\\MauticVocativeBundle::includeLibraryToBundle"
+    "pre-autoload-dump": "MauticPlugin\\GranamVocativeBundle\\GranamVocativeBundle::includeLibraryToBundle"
+  },
+  "config": {
+    "allow-plugins": {
+      "symfony/flex": true
+    }
   }
 }
