@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MauticPlugin\GranamVocativeBundle\EventListener;
+namespace MauticPlugin\GranamCzechVocativeBundle\EventListener;
 
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\EmailSendEvent;
-use MauticPlugin\GranamVocativeBundle\Service\NameToVocativeConverter;
+use MauticPlugin\GranamCzechVocativeBundle\Service\NameToVocativeConverter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class EmailNameToVocativeSubscriber implements EventSubscriberInterface

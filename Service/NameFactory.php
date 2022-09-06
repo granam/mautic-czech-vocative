@@ -1,5 +1,5 @@
 <?php
-namespace MauticPlugin\GranamVocativeBundle\Service;
+namespace MauticPlugin\GranamCzechVocativeBundle\Service;
 
 use Granam\CzechVocative\CzechName;
 

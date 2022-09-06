@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MauticPlugin\GranamVocativeBundle\EventListener;
+namespace MauticPlugin\GranamCzechVocativeBundle\EventListener;
 
 use Mautic\CoreBundle\Event as MauticEvents;
 use Mautic\DynamicContentBundle\DynamicContentEvents;
-use MauticPlugin\GranamVocativeBundle\Service\NameToVocativeConverter;
+use MauticPlugin\GranamCzechVocativeBundle\Service\NameToVocativeConverter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**

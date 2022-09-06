@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MauticPlugin\GranamVocativeBundle\Tests\EventListener;
+namespace MauticPlugin\GranamCzechVocativeBundle\Tests\EventListener;
 
 use Mautic\CoreBundle\Event\TokenReplacementEvent;
 use Mautic\DynamicContentBundle\DynamicContentEvents;
-use MauticPlugin\GranamVocativeBundle\EventListener\VocativeDynamicContentSubscriber;
-use MauticPlugin\GranamVocativeBundle\Service\NameToVocativeConverter;
-use MauticPlugin\GranamVocativeBundle\Tests\GranamTestWithMockery;
+use MauticPlugin\GranamCzechVocativeBundle\EventListener\VocativeDynamicContentSubscriber;
+use MauticPlugin\GranamCzechVocativeBundle\Service\NameToVocativeConverter;
+use MauticPlugin\GranamCzechVocativeBundle\Tests\GranamTestWithMockery;
 use Mockery\MockInterface;
 
 class VocativeDynamicContentSubscriberTest extends GranamTestWithMockery

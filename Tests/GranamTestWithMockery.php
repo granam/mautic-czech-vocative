@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MauticPlugin\GranamVocativeBundle\Tests;
+namespace MauticPlugin\GranamCzechVocativeBundle\Tests;
 
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MauticPlugin\GranamVocativeBundle\Tests\Config;
+namespace MauticPlugin\GranamCzechVocativeBundle\Tests\Config;
 
 use PHPUnit\Framework\TestCase;
 

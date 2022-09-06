@@ -1,5 +1,5 @@
 <?php
-namespace MauticPlugin\GranamVocativeBundle\Service\Helpers\Exceptions;
+namespace MauticPlugin\GranamCzechVocativeBundle\Service\Helpers\Exceptions;
 
 class UnknownOption extends \LogicException
 {

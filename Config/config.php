@@ -1,16 +1,16 @@
 <?php
 
-use MauticPlugin\GranamVocativeBundle\Service\NameToVocativeConverter;
-use MauticPlugin\GranamVocativeBundle\Service\NameFactory;
+use MauticPlugin\GranamCzechVocativeBundle\Service\NameToVocativeConverter;
+use MauticPlugin\GranamCzechVocativeBundle\Service\NameFactory;
 use Granam\CzechVocative\CzechName;
-use MauticPlugin\GranamVocativeBundle\EventListener\EmailNameToVocativeSubscriber;
-use MauticPlugin\GranamVocativeBundle\EventListener\VocativeDynamicContentSubscriber;
+use MauticPlugin\GranamCzechVocativeBundle\EventListener\EmailNameToVocativeSubscriber;
+use MauticPlugin\GranamCzechVocativeBundle\EventListener\VocativeDynamicContentSubscriber;
 
 return [
-    'name' => 'Vocative',
+    'name' => 'Czech vocative',
     'description' => 'Modifier to convert a name or given gender-dependent alias to its vocative form, useful for email opening salutation.',
-    'author' => 'Friends of Mautic',
-    'version' => '2.1.0',
+    'author' => 'Jaroslav Týc',
+    'version' => '4.0.0',
 
     'services' => [
         'events' => [

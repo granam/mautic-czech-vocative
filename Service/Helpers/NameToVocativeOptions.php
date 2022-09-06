@@ -1,5 +1,5 @@
 <?php
-namespace MauticPlugin\GranamVocativeBundle\Service\Helpers;
+namespace MauticPlugin\GranamCzechVocativeBundle\Service\Helpers;
 
 class NameToVocativeOptions
 {
@@ -47,7 +47,7 @@ class NameToVocativeOptions
 
     /**
      * @param array $values
-     * @throws \MauticPlugin\GranamVocativeBundle\Service\Helpers\Exceptions\UnknownOption
+     * @throws \MauticPlugin\GranamCzechVocativeBundle\Service\Helpers\Exceptions\UnknownOption
      */
     public function __construct(array $values)
     {

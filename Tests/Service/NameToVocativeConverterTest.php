@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MauticPlugin\GranamVocativeBundle\Tests\Service;
+namespace MauticPlugin\GranamCzechVocativeBundle\Tests\Service;
 
 use Granam\CzechVocative\CzechName;
 use Mautic\EmailBundle\Event\EmailSendEvent;
-use MauticPlugin\GranamVocativeBundle\Service\NameToVocativeConverter;
-use MauticPlugin\GranamVocativeBundle\Tests\GranamTestWithMockery;
+use MauticPlugin\GranamCzechVocativeBundle\Service\NameToVocativeConverter;
+use MauticPlugin\GranamCzechVocativeBundle\Tests\GranamTestWithMockery;
 use Mockery\MockInterface;
 
 class NameToVocativeConverterTest extends GranamTestWithMockery

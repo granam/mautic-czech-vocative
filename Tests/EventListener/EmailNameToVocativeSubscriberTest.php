@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MauticPlugin\GranamVocativeBundle\Tests\EventListener;
+namespace MauticPlugin\GranamCzechVocativeBundle\Tests\EventListener;
 
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\EmailSendEvent;
 use Mautic\LeadBundle\EventListener\EmailSubscriber;
-use MauticPlugin\GranamVocativeBundle\EventListener\EmailNameToVocativeSubscriber;
-use MauticPlugin\GranamVocativeBundle\Service\NameToVocativeConverter;
-use MauticPlugin\GranamVocativeBundle\Tests\GranamTestWithMockery;
+use MauticPlugin\GranamCzechVocativeBundle\EventListener\EmailNameToVocativeSubscriber;
+use MauticPlugin\GranamCzechVocativeBundle\Service\NameToVocativeConverter;
+use MauticPlugin\GranamCzechVocativeBundle\Tests\GranamTestWithMockery;
 use Mockery\MockInterface;
 
 class EmailNameToVocativeSubscriberTest extends GranamTestWithMockery

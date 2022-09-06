@@ -35,7 +35,7 @@ the [Dynamic Web Content](https://mautic.org/docs/en/dwc/index.html) is also sup
 
 # Install
 
-1. Let it install by `composer require granam/mautic-vocative-bundle`
+1. Let it install by `composer require granam/mautic-czech-vocative-bundle`
 2. Clear Mautic cache by `./app/console cache:clear` or just delete the `app/cache` dir.
     - note: In some cases, not yet fully understood, the cache is not rebuilt fully automatically.
       In case of fatal error because of expected but missing file in the cache, rebuilt it manually:

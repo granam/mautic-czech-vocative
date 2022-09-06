@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MauticPlugin\GranamVocativeBundle\Tests\Service;
+namespace MauticPlugin\GranamCzechVocativeBundle\Tests\Service;
 
 use Granam\CzechVocative\CzechName;
-use MauticPlugin\GranamVocativeBundle\Service\NameFactory;
+use MauticPlugin\GranamCzechVocativeBundle\Service\NameFactory;
 use PHPUnit\Framework\TestCase;
 
 class NameFactoryTest extends TestCase

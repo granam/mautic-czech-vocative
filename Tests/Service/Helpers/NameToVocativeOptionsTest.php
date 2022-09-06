@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MauticPlugin\GranamVocativeBundle\Tests\Service\Helpers;
+namespace MauticPlugin\GranamCzechVocativeBundle\Tests\Service\Helpers;
 
-use MauticPlugin\GranamVocativeBundle\Service\Helpers\NameToVocativeOptions;
+use MauticPlugin\GranamCzechVocativeBundle\Service\Helpers\NameToVocativeOptions;
 use PHPUnit\Framework\TestCase;
 
 class NameToVocativeOptionsTest extends TestCase

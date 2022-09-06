@@ -1,5 +1,5 @@
 <?php
-namespace MauticPlugin\GranamVocativeBundle\Service\Helpers;
+namespace MauticPlugin\GranamCzechVocativeBundle\Service\Helpers;
 
 class RecursiveImplode
 {
